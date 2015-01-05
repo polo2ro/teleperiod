@@ -1,0 +1,14 @@
+{
+  "name": "teleperiod",
+  "version": "0.0.1",
+  "main": "src/teleperiod.js",
+  "ignore": [
+    ".gitignore",
+    ".jshintrc",
+    "test",
+    "public"
+  ],
+  "dependencies": {
+    "d3": "~3.5.3"
+  }
+}
