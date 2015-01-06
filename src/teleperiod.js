@@ -36,8 +36,12 @@ function timeline(name, datasource) {
 
 function teleperiod(settings) {
 
-    this.main = settings.object;
+    this.viewport = settings.object;
     this.settings = settings;
+
+    this.main = null;
+
+
 
     var telep = this;
 
@@ -47,11 +51,76 @@ function teleperiod(settings) {
 
     this.loadedIntervals = [];
 
+
+
+    this.initFloatDates = function() {
+        var today = new Date();
+        this.floatFrom = new Date(today);
+        this.floatTo = new Date(today);
+
+        this.floatFrom.setDate(today.getDate()-7);
+        this.floatTo.setDate(today.getDate()+30);
+    }
+
+
     this.setSize = function() {
-        telep.main
-            .attr("width", this.settings.width || 500)
-            .attr("height", teleperiod.timelines.length * 20);
+        telep.viewport
+            .attr("width", this.settings.width || 800)
+            .attr("height", 300 + teleperiod.timelines.length * 20);
     };
+
+    /**
+     * Create main frame with the grid
+     */
+    this.createMain = function() {
+
+        telep.initFloatDates();
+
+        telep.main = telep.viewport.append('rect');
+
+        telep.main
+            .attr('class', 'main')
+            .attr("width", this.settings.width || 800)
+            .attr("height", 300);
+
+        var loopDate = new Date(telep.floatFrom);
+
+        do {
+            telep.drawDate(loopDate);
+            loopDate.setDate(loopDate.getDate()+1);
+        } while (loopDate < telep.floatTo);
+    }
+
+
+
+    this.drawDate = function(d) {
+
+        var s  = ((d.getTime() - telep.floatFrom.getTime()) /1000);
+        var days = s/ 86400;
+
+        var g = telep.viewport.append('g')
+                .attr('class', 'day')
+                .attr('transform', 'translate('+(days * 40)+',50)');
+
+
+
+            g
+                .append('rect')
+                .attr('width', 39)
+                .attr('height', 250);
+
+        if (0 == d.getDay()) {
+            g.attr('class', 'day dayoff');
+        }
+
+        g
+        .append('text')
+            .attr('transform', "rotate(90)")
+            .text(d.toDateString())
+            ;
+
+
+    }
 
 
     this.addTimeLine = function(name, datasource) {

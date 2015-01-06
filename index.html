@@ -13,7 +13,15 @@
         <svg id="teleperiod_placeholder"></svg>
 
         <script type="text/javascript">
+            var teleperiod = new teleperiod({
+                object: d3.select('#teleperiod_placeholder'),
+                workingtimes: function(from, to) {
+                    return [];
+                }
+            });
 
+            teleperiod.setSize();
+            teleperiod.createMain();
         </script>
     </body>
 </html>

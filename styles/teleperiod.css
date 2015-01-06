@@ -1,0 +1,21 @@
+#teleperiod_placeholder {
+    border:#ccc 1px solid;
+}
+
+#teleperiod_placeholder .main {
+    fill:rgb(250,250,250);
+}
+
+#teleperiod_placeholder .day rect {
+    fill:rgb(240,240,240);
+}
+
+#teleperiod_placeholder .day text {
+    fill:#bbb;
+    font-size:10px;
+    translate(5,5);
+}
+
+#teleperiod_placeholder .dayoff rect {
+    fill:rgb(255,240,240);
+}
