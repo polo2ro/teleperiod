@@ -52,6 +52,25 @@ function teleperiod(settings) {
     this.loadedIntervals = [];
 
 
+    this.getWidth = function() {
+        return this.settings.width || 800;
+    }
+
+    this.getHeight = function() {
+        return telep.getGraphHeight() + teleperiod.timelines.length * 20;
+    }
+
+
+    this.getGraphHeight = function() {
+        return 300;
+    }
+
+
+    this.getButtonWidth = function() {
+        return this.settings.buttonWidth || 30;
+    }
+
+
 
     this.initFloatDates = function() {
         var today = new Date();
@@ -65,8 +84,8 @@ function teleperiod(settings) {
 
     this.setSize = function() {
         telep.viewport
-            .attr("width", this.settings.width || 800)
-            .attr("height", 300 + teleperiod.timelines.length * 20);
+            .attr("width", telep.getWidth())
+            .attr("height", telep.getHeight());
     };
 
     /**
@@ -76,12 +95,30 @@ function teleperiod(settings) {
 
         telep.initFloatDates();
 
-        telep.main = telep.viewport.append('rect');
+        telep.main = telep.viewport.append('svg');
+
+        telep.viewport.append('rect')
+            .attr('class', 'buttonbg')
+            .attr('width', telep.getButtonWidth())
+            .attr('height', telep.getHeight())
+            .on("click", telep.backward)
+        ;
+
+        telep.viewport.append('rect')
+            .attr('class', 'buttonbg')
+            .attr('x', telep.getWidth() - telep.getButtonWidth())
+            .attr('width', telep.getButtonWidth())
+            .attr('height', telep.getHeight())
+            .on("click", telep.forward)
+        ;
 
         telep.main
             .attr('class', 'main')
-            .attr("width", this.settings.width || 800)
-            .attr("height", 300);
+            .attr('x', telep.getButtonWidth())
+            .attr("width", telep.getWidth() -2*telep.getButtonWidth())
+            .attr('height', telep.getGraphHeight());
+
+
 
         var loopDate = new Date(telep.floatFrom);
 
@@ -98,7 +135,7 @@ function teleperiod(settings) {
         var s  = ((d.getTime() - telep.floatFrom.getTime()) /1000);
         var days = s/ 86400;
 
-        var g = telep.viewport.append('g')
+        var g = telep.main.append('g')
                 .attr('class', 'day')
                 .attr('transform', 'translate('+(days * 40)+',50)');
 
@@ -115,6 +152,8 @@ function teleperiod(settings) {
 
         g
         .append('text')
+            .attr('x', 5)
+            .attr('y', -5)
             .attr('transform', "rotate(90)")
             .text(d.toDateString())
             ;
@@ -146,5 +185,21 @@ function teleperiod(settings) {
         for(var i=0; i<telep.timelines.length; i++) {
             telep.timelines[i].load(from, to);
         }
+    }
+
+
+
+
+    this.backward = function() {
+        var x = parseInt(telep.main.attr('x'));
+        console.log(x);
+        telep.main.attr('x', x+ 50);
+    }
+
+
+    this.forward = function() {
+        var x = parseInt(telep.main.attr('x'));
+        console.log(x);
+        telep.main.attr('x',  x- 50);
     }
 }

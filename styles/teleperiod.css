@@ -4,6 +4,7 @@
 
 #teleperiod_placeholder .main {
     fill:rgb(250,250,250);
+
 }
 
 #teleperiod_placeholder .day rect {
@@ -13,9 +14,18 @@
 #teleperiod_placeholder .day text {
     fill:#bbb;
     font-size:10px;
-    translate(5,5);
 }
 
 #teleperiod_placeholder .dayoff rect {
     fill:rgb(255,240,240);
+}
+
+
+#teleperiod_placeholder .buttonbg {
+    fill:#999;
+    cursor:pointer;
+}
+
+#teleperiod_placeholder .buttonbg:hover {
+    fill:#444;
 }
