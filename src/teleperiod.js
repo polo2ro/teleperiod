@@ -115,10 +115,13 @@ function teleperiod(settings) {
     {
         var loopDate = new Date(from);
 
-        do {
+        while (loopDate < to) {
             telep.drawDate(loopDate);
             loopDate.setDate(loopDate.getDate()+1);
-        } while (loopDate < to);
+        };
+
+
+        telep.load(from, to);
     }
 
 
@@ -128,13 +131,15 @@ function teleperiod(settings) {
      */
     this.drawDate = function(d)
     {
-
         var s  = ((d.getTime() - telep.floatFrom.currentDate.getTime()) /1000);
-        var days = s/ 86400;
+        var days = Math.round(s/ 86400);
+
+        var x = days * telep.getDateWidth();
+
 
         var g = telep.main.append('g')
                 .attr('class', 'day')
-                .attr('transform', 'translate('+(days * telep.getDateWidth())+','+telep.getHeaderHeight()+')');
+                .attr('transform', 'translate('+x+','+telep.getHeaderHeight()+')');
 
 
 
@@ -193,19 +198,40 @@ function teleperiod(settings) {
     }
 
 
+    this.createSpaceOnLeft = function(nbDays) {
+
+        telep.main.selectAll('.day').transition().attr('transform', function() {
+            var m = this.getAttribute('transform').match(/\((\d+),(\d+)\)/);
+            var newX = parseInt(m[1])+ (nbDays * telep.getDateWidth()) ;
+
+            return 'translate('+newX+','+m[2]+')';
+        });
+    }
+
+
+    this.slideMain = function(nbDays) {
+
+        telep.main.transition().attr('x', function() {
+            return parseInt(this.getAttribute('x')) + (nbDays * telep.getDateWidth());
+        });
+    }
+
 
 
     this.backward = function() {
-        var x = parseInt(telep.main.attr('x'));
-        telep.main.transition().attr('x', x+ 7* telep.getDateWidth());
 
-        telep.floatFrom.add(7);
+        // move the days in main frame 7 days to the right (create space for 7 days)
+        telep.createSpaceOnLeft(7);
+        telep.slideMain(7);
+
+        // lower the start date
+        telep.floatFrom.add(-7);
     }
 
 
     this.forward = function() {
-        var x = parseInt(telep.main.attr('x'));
-        telep.main.transition().attr('x',  x- 7* telep.getDateWidth());
+
+        telep.slideMain(-7);
 
         telep.floatTo.add(7);
     }

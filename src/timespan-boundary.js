@@ -47,7 +47,12 @@ function timespanBoundary(initDate)
         boundary.currentDate = newDate;
 
         if (null !== boundary.onUpdateCallback) {
-            boundary.onUpdateCallback(oldDate, new Date(newDate));
+            var newCopy = new Date(newDate);
+            if (newCopy.getTime() > oldDate.getTime()) {
+                boundary.onUpdateCallback(oldDate, newCopy);
+            } else {
+                boundary.onUpdateCallback(newCopy, oldDate);
+            }
         }
     }
 
