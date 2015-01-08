@@ -1,49 +1,21 @@
 'use strict';
 
+
 /**
- * Timeline reference object
- * @param {string}      name       Label for the timeline
- * @param {function} datasource object called when data is needed on the timeline
+ * Main teleperiod class
+ *
+ * @param   {Object}   settings [[Description]]
+ *
  */
-function timeline(name, datasource) {
-
-    this.name = name;
-    this.datasource = datasource;
-
-    this.loadedEvents = [];
-
-
-
-    var tline = this;
-
-    /**
-     * load timeline between two dates
-     * @param {Date} from [[Description]]
-     * @param {Date} to   [[Description]]
-     */
-    this.load = function(from, to) {
-
-        var interval = { from: from, to: to };
-        var arr = tline.datasource(interval);
-
-        for(var i=0; i<arr.length; i++) {
-            tline.loadedEvents.push(arr[i]);
-        }
-    }
-}
-
-
-
 function teleperiod(settings) {
+
+
+    var telep = this;
 
     this.viewport = settings.object;
     this.settings = settings;
 
     this.main = null;
-
-
-
-    var telep = this;
 
     this.workingtimesEvents = [];
 
@@ -53,11 +25,19 @@ function teleperiod(settings) {
 
 
     this.getWidth = function() {
-        return this.settings.width || 800;
+        return this.settings.width || 1000;
+    }
+
+    this.getDateWidth = function() {
+        return this.settings.dateWidth || 30;
     }
 
     this.getHeight = function() {
-        return telep.getGraphHeight() + teleperiod.timelines.length * 20;
+        return telep.getHeaderHeight() + telep.getGraphHeight() + (teleperiod.timelines.length * 20);
+    }
+
+    this.getHeaderHeight = function() {
+        return 50;
     }
 
 
@@ -70,15 +50,25 @@ function teleperiod(settings) {
         return this.settings.buttonWidth || 30;
     }
 
+    this.getDayOff = function() {
+        return this.settings.dayOff || [6,0];
+    }
+
 
 
     this.initFloatDates = function() {
         var today = new Date();
-        this.floatFrom = new Date(today);
-        this.floatTo = new Date(today);
+        telep.floatFrom = new timespanBoundary(today);
+        telep.floatTo = new timespanBoundary(today);
 
-        this.floatFrom.setDate(today.getDate()-7);
-        this.floatTo.setDate(today.getDate()+30);
+
+        telep.floatFrom.onUpdate(this.drawIntervalDates);
+        telep.floatTo.onUpdate(this.drawIntervalDates);
+
+        telep.floatTo.add(telep.getWidth() / telep.getDateWidth());
+
+
+
     }
 
 
@@ -91,16 +81,14 @@ function teleperiod(settings) {
     /**
      * Create main frame with the grid
      */
-    this.createMain = function() {
-
-        telep.initFloatDates();
-
+    this.createMain = function()
+    {
         telep.main = telep.viewport.append('svg');
 
         telep.viewport.append('rect')
             .attr('class', 'buttonbg')
             .attr('width', telep.getButtonWidth())
-            .attr('height', telep.getHeight())
+            .attr('height', telep.getHeaderHeight())
             .on("click", telep.backward)
         ;
 
@@ -108,56 +96,73 @@ function teleperiod(settings) {
             .attr('class', 'buttonbg')
             .attr('x', telep.getWidth() - telep.getButtonWidth())
             .attr('width', telep.getButtonWidth())
-            .attr('height', telep.getHeight())
+            .attr('height', telep.getHeaderHeight())
             .on("click", telep.forward)
         ;
 
         telep.main
             .attr('class', 'main')
-            .attr('x', telep.getButtonWidth())
-            .attr("width", telep.getWidth() -2*telep.getButtonWidth())
+            .attr('x', 0)
+            .attr("width", 4000)
             .attr('height', telep.getGraphHeight());
 
 
+        telep.initFloatDates();
+    }
 
-        var loopDate = new Date(telep.floatFrom);
+
+    this.drawIntervalDates = function(from, to)
+    {
+        var loopDate = new Date(from);
 
         do {
             telep.drawDate(loopDate);
             loopDate.setDate(loopDate.getDate()+1);
-        } while (loopDate < telep.floatTo);
+        } while (loopDate < to);
     }
 
 
+    /**
+     * Draw one day
+     * @param {Date} d [[Description]]
+     */
+    this.drawDate = function(d)
+    {
 
-    this.drawDate = function(d) {
-
-        var s  = ((d.getTime() - telep.floatFrom.getTime()) /1000);
+        var s  = ((d.getTime() - telep.floatFrom.currentDate.getTime()) /1000);
         var days = s/ 86400;
 
         var g = telep.main.append('g')
                 .attr('class', 'day')
-                .attr('transform', 'translate('+(days * 40)+',50)');
+                .attr('transform', 'translate('+(days * telep.getDateWidth())+','+telep.getHeaderHeight()+')');
 
 
 
             g
                 .append('rect')
-                .attr('width', 39)
+                .attr('width', telep.getDateWidth() - 1)
                 .attr('height', 250);
 
-        if (0 == d.getDay()) {
+        if (-1 !== telep.getDayOff().indexOf(d.getDay())) {
             g.attr('class', 'day dayoff');
         }
 
         g
         .append('text')
+            .attr('class', 'weekday')
             .attr('x', 5)
-            .attr('y', -5)
+            .attr('y', -10)
             .attr('transform', "rotate(90)")
-            .text(d.toDateString())
+            .text(d.toLocaleDateString('Fr-fr', {weekday: "long"}))
             ;
 
+        g
+        .append('text')
+            .attr('class', 'date')
+            .attr('x', telep.getDateWidth() /2)
+            .attr('y', -10)
+            .text(d.getDate())
+            ;
 
     }
 
@@ -192,14 +197,16 @@ function teleperiod(settings) {
 
     this.backward = function() {
         var x = parseInt(telep.main.attr('x'));
-        console.log(x);
-        telep.main.attr('x', x+ 50);
+        telep.main.transition().attr('x', x+ 7* telep.getDateWidth());
+
+        telep.floatFrom.add(7);
     }
 
 
     this.forward = function() {
         var x = parseInt(telep.main.attr('x'));
-        console.log(x);
-        telep.main.attr('x',  x- 50);
+        telep.main.transition().attr('x',  x- 7* telep.getDateWidth());
+
+        telep.floatTo.add(7);
     }
 }
