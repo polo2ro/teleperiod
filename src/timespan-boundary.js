@@ -42,7 +42,7 @@ function timespanBoundary(initDate)
         boundary.dayPosition += nbDays;
 
         var oldDate = new Date(boundary.currentDate);
-        var newDate = new Date();
+        var newDate = new Date(boundary.currentDate);
         newDate.setDate(boundary.currentDate.getDate() + nbDays);
         boundary.currentDate = newDate;
 

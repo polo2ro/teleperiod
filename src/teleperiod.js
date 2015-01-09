@@ -62,13 +62,17 @@ function teleperiod(settings) {
         telep.floatTo = new timespanBoundary(today);
 
 
+
+
         telep.floatFrom.onUpdate(this.drawIntervalDates);
         telep.floatTo.onUpdate(this.drawIntervalDates);
 
-        telep.floatTo.add(telep.getWidth() / telep.getDateWidth());
+        var viewPortDays = 1 + Math.round(telep.getWidth() / telep.getDateWidth());
 
+        telep.viewportFrom = 0;
+        telep.viewportTo = viewPortDays;
 
-
+        telep.floatTo.add(viewPortDays);
     }
 
 
@@ -113,6 +117,8 @@ function teleperiod(settings) {
 
     this.drawIntervalDates = function(from, to)
     {
+        console.log('draw dates from : '+from+' to : '+to);
+
         var loopDate = new Date(from);
 
         while (loopDate < to) {
@@ -217,22 +223,38 @@ function teleperiod(settings) {
     }
 
 
-
+    /**
+     * Click the left button
+     */
     this.backward = function() {
 
+        telep.viewportFrom -= 7;
+        telep.viewportTo -= 7;
+
         // move the days in main frame 7 days to the right (create space for 7 days)
-        telep.createSpaceOnLeft(7);
+        //telep.createSpaceOnLeft(7);
         telep.slideMain(7);
 
         // lower the start date
-        telep.floatFrom.add(-7);
+        //telep.floatFrom.add(-7);
     }
 
-
+    /**
+     * Click the right button
+     */
     this.forward = function() {
+
+        telep.viewportFrom += 7;
+        telep.viewportTo += 7;
 
         telep.slideMain(-7);
 
-        telep.floatTo.add(7);
+        if (telep.viewportTo > telep.floatTo.dayPosition) {
+            var enlarge = telep.viewportTo - telep.floatTo.dayPosition;
+            console.log('enlarge right : '+enlarge+' days');
+            telep.floatTo.add(enlarge);
+
+
+        }
     }
 }
