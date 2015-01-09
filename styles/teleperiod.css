@@ -18,6 +18,12 @@
     font-family: Arial;
 }
 
+#teleperiod_placeholder .day .month {
+    fill:#ffa05b;
+    font-size:14px;
+    font-family: Arial;
+}
+
 #teleperiod_placeholder .day .date {
     fill:#ffa05b;
     font-size:16px;
@@ -42,4 +48,5 @@
 
 #teleperiod_placeholder .buttonbg:hover {
     fill:#444;
+    opacity:.8;
 }

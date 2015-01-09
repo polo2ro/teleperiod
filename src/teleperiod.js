@@ -72,6 +72,7 @@ function teleperiod(settings) {
         telep.viewportFrom = 0;
         telep.viewportTo = viewPortDays;
 
+        telep.main.attr('width', viewPortDays * telep.getDateWidth());
         telep.floatTo.add(viewPortDays);
     }
 
@@ -107,7 +108,7 @@ function teleperiod(settings) {
         telep.main
             .attr('class', 'main')
             .attr('x', 0)
-            .attr("width", 4000)
+            .attr("width", 0)
             .attr('height', telep.getGraphHeight());
 
 
@@ -117,8 +118,6 @@ function teleperiod(settings) {
 
     this.drawIntervalDates = function(from, to)
     {
-        console.log('draw dates from : '+from+' to : '+to);
-
         var loopDate = new Date(from);
 
         while (loopDate < to) {
@@ -175,6 +174,14 @@ function teleperiod(settings) {
             .text(d.getDate())
             ;
 
+        if (1 === d.getDate()) {
+            g.append('text')
+            .attr('class', 'month')
+            .attr('x', 5)
+            .attr('y', -35)
+            .text(d.toLocaleDateString('Fr-fr', {month: "long", year: "numeric"}))
+            ;
+        }
     }
 
 
@@ -208,7 +215,7 @@ function teleperiod(settings) {
 
         telep.main.selectAll('.day').transition().attr('transform', function() {
             var m = this.getAttribute('transform').match(/\((\d+),(\d+)\)/);
-            var newX = parseInt(m[1])+ (nbDays * telep.getDateWidth()) ;
+            var newX = parseInt(m[1], 10)+ (nbDays * telep.getDateWidth()) ;
 
             return 'translate('+newX+','+m[2]+')';
         });
@@ -218,7 +225,7 @@ function teleperiod(settings) {
     this.slideMain = function(nbDays) {
 
         telep.main.transition().attr('x', function() {
-            return parseInt(this.getAttribute('x')) + (nbDays * telep.getDateWidth());
+            return parseInt(this.getAttribute('x'), 10) + (nbDays * telep.getDateWidth());
         });
     }
 
@@ -232,11 +239,19 @@ function teleperiod(settings) {
         telep.viewportTo -= 7;
 
         // move the days in main frame 7 days to the right (create space for 7 days)
-        //telep.createSpaceOnLeft(7);
-        telep.slideMain(7);
 
-        // lower the start date
-        //telep.floatFrom.add(-7);
+
+
+        if (telep.viewportFrom < telep.floatFrom.dayPosition) {
+            var enlarge = telep.viewportFrom - telep.floatFrom.dayPosition;
+
+            telep.createSpaceOnLeft(-1 * enlarge);
+            telep.floatFrom.add(enlarge);
+
+            return;
+        }
+
+        telep.slideMain(7);
     }
 
     /**
@@ -251,10 +266,11 @@ function teleperiod(settings) {
 
         if (telep.viewportTo > telep.floatTo.dayPosition) {
             var enlarge = telep.viewportTo - telep.floatTo.dayPosition;
-            console.log('enlarge right : '+enlarge+' days');
+
+            var currentWidth = parseInt(telep.main.attr("width"), 10);
+            telep.main.attr("width", currentWidth + enlarge * telep.getDateWidth());
+
             telep.floatTo.add(enlarge);
-
-
         }
     }
 }
