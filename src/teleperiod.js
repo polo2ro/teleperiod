@@ -124,7 +124,7 @@ function teleperiod(settings) {
 
         ;
 
-        group.append('polyline')
+        group.append('polygon')
             .attr('class', 'buttonarrow')
             .attr('points', '25,5 25,45 5,25')
         ;
@@ -147,7 +147,7 @@ function teleperiod(settings) {
         ;
 
 
-        group.append('polyline')
+        group.append('polygon')
             .attr('class', 'buttonarrow')
             .attr('points', '5,5 25,25 5,45')
         ;
