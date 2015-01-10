@@ -54,6 +54,10 @@ function teleperiod(settings) {
         return this.settings.dayOff || [6,0];
     }
 
+    this.getMoveDays = function() {
+        return 7;
+    }
+
 
 
     this.initFloatDates = function() {
@@ -90,20 +94,10 @@ function teleperiod(settings) {
     {
         telep.main = telep.viewport.append('svg');
 
-        telep.viewport.append('rect')
-            .attr('class', 'buttonbg')
-            .attr('width', telep.getButtonWidth())
-            .attr('height', telep.getHeaderHeight())
-            .on("click", telep.backward)
-        ;
+        telep.leftButton();
+        telep.rightButton();
 
-        telep.viewport.append('rect')
-            .attr('class', 'buttonbg')
-            .attr('x', telep.getWidth() - telep.getButtonWidth())
-            .attr('width', telep.getButtonWidth())
-            .attr('height', telep.getHeaderHeight())
-            .on("click", telep.forward)
-        ;
+
 
         telep.main
             .attr('class', 'main')
@@ -113,6 +107,50 @@ function teleperiod(settings) {
 
 
         telep.initFloatDates();
+    }
+
+
+    this.leftButton = function()
+    {
+        var group = telep.viewport.append('svg')
+            .attr('class', 'button')
+            .on("click", telep.backward)
+        ;
+
+        group.append('rect')
+            .attr('class', 'buttonbg')
+            .attr('width', telep.getButtonWidth())
+            .attr('height', telep.getHeaderHeight())
+
+        ;
+
+        group.append('polyline')
+            .attr('class', 'buttonarrow')
+            .attr('points', '25,5 25,45 5,25')
+        ;
+    }
+
+
+    this.rightButton = function()
+    {
+        var group = telep.viewport.append('svg')
+            .attr('class', 'button')
+            .attr('x', telep.getWidth() - telep.getButtonWidth())
+            .on("click", telep.forward)
+        ;
+
+        group.append('rect')
+            .attr('class', 'buttonbg')
+            .attr('width', telep.getButtonWidth())
+            .attr('height', telep.getHeaderHeight())
+
+        ;
+
+
+        group.append('polyline')
+            .attr('class', 'buttonarrow')
+            .attr('points', '5,5 25,25 5,45')
+        ;
     }
 
 
@@ -235,8 +273,8 @@ function teleperiod(settings) {
      */
     this.backward = function() {
 
-        telep.viewportFrom -= 7;
-        telep.viewportTo -= 7;
+        telep.viewportFrom -= telep.getMoveDays();
+        telep.viewportTo -= telep.getMoveDays();
 
         // move the days in main frame 7 days to the right (create space for 7 days)
 
@@ -251,7 +289,7 @@ function teleperiod(settings) {
             return;
         }
 
-        telep.slideMain(7);
+        telep.slideMain(telep.getMoveDays());
     }
 
     /**
@@ -259,16 +297,18 @@ function teleperiod(settings) {
      */
     this.forward = function() {
 
-        telep.viewportFrom += 7;
-        telep.viewportTo += 7;
+        telep.viewportFrom += telep.getMoveDays();
+        telep.viewportTo += telep.getMoveDays();
 
-        telep.slideMain(-7);
+        telep.slideMain(-1 * telep.getMoveDays());
 
         if (telep.viewportTo > telep.floatTo.dayPosition) {
-            var enlarge = telep.viewportTo - telep.floatTo.dayPosition;
 
-            var currentWidth = parseInt(telep.main.attr("width"), 10);
-            telep.main.attr("width", currentWidth + enlarge * telep.getDateWidth());
+            var enlarge = telep.viewportTo - telep.floatTo.dayPosition;
+            var width = Math.abs(parseInt(telep.main.attr('x'), 10)) + telep.getWidth();
+            var enlargePx = Math.abs(enlarge * telep.getDateWidth());
+
+            telep.main.attr("width", width + enlargePx);
 
             telep.floatTo.add(enlarge);
         }

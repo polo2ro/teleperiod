@@ -40,13 +40,21 @@
 }
 
 
-#teleperiod_placeholder .buttonbg {
-    fill:#999;
+#teleperiod_placeholder .button {
     cursor:pointer;
-    opacity:.5;
+    opacity:.7;
 }
 
-#teleperiod_placeholder .buttonbg:hover {
-    fill:#444;
-    opacity:.8;
+#teleperiod_placeholder .buttonbg {
+    fill:#999;
+}
+
+
+#teleperiod_placeholder .buttonarrow {
+    fill:#ffa05b;
+}
+
+
+#teleperiod_placeholder .button:hover {
+    opacity:.9;
 }
