@@ -32,6 +32,10 @@ function teleperiod(settings) {
         return this.settings.dateWidth || 30;
     }
 
+    this.getDateHeight = function() {
+        return 250;
+    }
+
     this.getHeight = function() {
         return telep.getHeaderHeight() + telep.getGraphHeight() + (teleperiod.timelines.length * 20);
     }
@@ -58,6 +62,13 @@ function teleperiod(settings) {
         return 7;
     }
 
+    this.getDayFirstMinute = function() {
+        return this.settings.dayFirstMinute || (7 * 60);
+    }
+
+    this.getDayLastMinute = function() {
+        return this.settings.dayLastMinute || (20 * 60);
+    }
 
 
     this.initFloatDates = function() {
@@ -167,6 +178,23 @@ function teleperiod(settings) {
         telep.load(from, to);
     }
 
+    this.getDateX = function(d)
+    {
+        var s  = ((d.getTime() - telep.floatFrom.currentDate.getTime()) /1000);
+        var days = Math.floor(s/ 86400);
+
+        return days * telep.getDateWidth();
+    }
+
+
+    this.getDateY = function(d)
+    {
+        var minutes = (d.getHours() * 60) + d.getMinutes();
+        var minFromStart = minutes - telep.getDayFirstMinute();
+        var minTotal = telep.getDayLastMinute() - telep.getDayFirstMinute();
+        return telep.getHeaderHeight() + Math.round(minFromStart * telep.getDateHeight() / minTotal);
+    }
+
 
     /**
      * Draw one day
@@ -174,11 +202,8 @@ function teleperiod(settings) {
      */
     this.drawDate = function(d)
     {
-        var s  = ((d.getTime() - telep.floatFrom.currentDate.getTime()) /1000);
-        var days = Math.round(s/ 86400);
 
-        var x = days * telep.getDateWidth();
-
+        var x = telep.getDateX(d);
 
         var g = telep.main.append('g')
                 .attr('class', 'day')
@@ -189,7 +214,7 @@ function teleperiod(settings) {
             g
                 .append('rect')
                 .attr('width', telep.getDateWidth() - 1)
-                .attr('height', 250);
+                .attr('height', telep.getDateHeight());
 
         if (-1 !== telep.getDayOff().indexOf(d.getDay())) {
             g.attr('class', 'day dayoff');
@@ -234,19 +259,53 @@ function teleperiod(settings) {
      */
     this.load = function(from, to) {
 
-        var interval = { from: from, to: to };
+        var interval = {
+            from: from,
+            to: to
+        };
+
+        var workingtimes = [];
+
         telep.loadedIntervals.push(interval);
 
         var arr = telep.settings.workingtimes(interval);
 
         for(var i=0; i<arr.length; i++) {
             telep.workingtimesEvents.push(arr[i]);
+            workingtimes.push(arr[i]);
         }
 
         for(var i=0; i<telep.timelines.length; i++) {
             telep.timelines[i].load(from, to);
         }
+
+        telep.addWorkingtimes(workingtimes);
     }
+
+
+    /**
+     * Add workingtimes periods on exiting days
+     * @param {Array} workingtimes [[Description]]
+     */
+    this.addWorkingtimes = function(workingtimes)
+    {
+        for (var i=0; i < workingtimes.length; i++) {
+            var event = workingtimes[i];
+            var x = telep.getDateX(event.dtstart);
+            var yStart = telep.getDateY(event.dtstart);
+            var yEnd = telep.getDateY(event.dtend);
+
+            telep.main.append('rect')
+                .attr('class', 'workingtime')
+                .attr('x', x)
+                .attr('y', yStart)
+                .attr('height', yEnd - yStart)
+                .attr('width', telep.getDateWidth() -1)
+            ;
+
+        }
+    }
+
 
 
     this.createSpaceOnLeft = function(nbDays) {

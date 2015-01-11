@@ -18,8 +18,14 @@
 }
 
 #teleperiod_placeholder .day rect {
-    fill:rgb(240,240,240);
+    fill:#f2f7e8;
+
 }
+
+#teleperiod_placeholder .workingtime {
+    fill:rgba(150, 150, 150, .15);
+}
+
 
 #teleperiod_placeholder .day .weekday {
     fill:#bbb;
@@ -50,7 +56,7 @@
 
 
 #teleperiod_placeholder .dayoff rect {
-    fill:#f2f7e8;
+    fill:rgb(240,240,240);
 }
 
 
