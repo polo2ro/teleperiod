@@ -24,6 +24,7 @@
 
 #teleperiod_placeholder .workingtime {
     fill:rgba(150, 150, 150, .15);
+    cursor:pointer;
 }
 
 
@@ -82,6 +83,17 @@
 
 #teleperiod_placeholder .wtTooltip {
     fill:#ffa05b;
-    width:50;
-    height:50;
+    opacity:.7;
+}
+
+#teleperiod_placeholder .wtTooltipDate,
+#teleperiod_placeholder .wtTooltipHour {
+    fill:#000;
+    font-size:10px;
+    font-family: Arial;
+}
+
+#teleperiod_placeholder .wtTooltipHour {
+    font-size:13px;
+    font-weight:bold;
 }

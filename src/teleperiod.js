@@ -71,6 +71,10 @@ function teleperiod(settings) {
         return this.settings.dayLastMinute || (20 * 60);
     }
 
+    this.getDateLocale = function() {
+        return this.settings.dateLocale || 'Fr-fr';
+    }
+
 
     this.initFloatDates = function() {
         var today = new Date();
@@ -106,13 +110,18 @@ function teleperiod(settings) {
     {
         telep.main = telep.viewport.append('svg');
         telep.wtTooltip = telep.viewport.append('svg')
-            .attr("class", "wtTooltip")
+            .attr('width', 100)
+            .attr('height', 50)
             .style("opacity", 0)
-
         ;
 
-        telep.wtTooltip.append('text').attr('class', 'date');
-        telep.wtTooltip.append('text').attr('class', 'hour');
+        telep.wtTooltip.append('polygon')
+            .attr("class", "wtTooltip")
+            .attr('points', '15,0 100,0 100,50 15,50 15,25 0,2 15,8')
+        ;
+
+        telep.wtTooltip.append('text').attr('y', 20).attr('x', 23).attr('class', 'wtTooltipDate');
+        telep.wtTooltip.append('text').attr('y', 40).attr('x', 23).attr('class', 'wtTooltipHour');
 
         telep.leftButton();
         telep.rightButton();
@@ -134,6 +143,8 @@ function teleperiod(settings) {
     this.leftButton = function()
     {
         var group = telep.viewport.append('svg')
+            .attr('width', telep.getButtonWidth())
+            .attr('height', telep.getHeaderHeight())
             .attr('class', 'button')
             .on("click", telep.backward)
         ;
@@ -155,6 +166,8 @@ function teleperiod(settings) {
     this.rightButton = function()
     {
         var group = telep.viewport.append('svg')
+            .attr('width', telep.getButtonWidth())
+            .attr('height', telep.getHeaderHeight())
             .attr('class', 'button')
             .attr('x', telep.getWidth() - telep.getButtonWidth())
             .on("click", telep.forward)
@@ -188,6 +201,11 @@ function teleperiod(settings) {
         telep.load(from, to);
     }
 
+    /**
+     * Convert a date to a X postion
+     * @param   {Date} d [[Description]]
+     * @returns {Integer} [[Description]]
+     */
     this.getDateX = function(d)
     {
         var s  = ((d.getTime() - telep.floatFrom.currentDate.getTime()) /1000);
@@ -197,6 +215,11 @@ function teleperiod(settings) {
     }
 
 
+    /**
+     * convert a date to a Y position
+     * @param   {Date} d [[Description]]
+     * @returns {int} [[Description]]
+     */
     this.getDateY = function(d)
     {
         var minutes = (d.getHours() * 60) + d.getMinutes();
@@ -204,6 +227,22 @@ function teleperiod(settings) {
         var minTotal = telep.getDayLastMinute() - telep.getDayFirstMinute();
         return telep.getHeaderHeight() + Math.round(minFromStart * telep.getDateHeight() / minTotal);
     }
+
+    /**
+     * convert y position to a number of minutes
+     * @param   {int} y [[Description]]
+     * @returns {int} [[Description]]
+     */
+    this.getMinutesFromY = function(y)
+    {
+        var minTotal = telep.getDayLastMinute() - telep.getDayFirstMinute();
+        var yPerMin = (telep.getDateHeight() / minTotal);
+
+        var minutes = telep.getDayFirstMinute() + Math.round((y - telep.getHeaderHeight()) / yPerMin);
+
+        return minutes;
+    }
+
 
 
     /**
@@ -236,7 +275,7 @@ function teleperiod(settings) {
             .attr('x', 5)
             .attr('y', -10)
             .attr('transform', "rotate(90)")
-            .text(d.toLocaleDateString('Fr-fr', {weekday: "long"}))
+            .text(d.toLocaleDateString(telep.getDateLocale(), {weekday: "long"}))
             ;
 
         g
@@ -252,7 +291,7 @@ function teleperiod(settings) {
             .attr('class', 'month')
             .attr('x', 5)
             .attr('y', -35)
-            .text(d.toLocaleDateString('Fr-fr', {month: "long", year: "numeric"}))
+            .text(d.toLocaleDateString(telep.getDateLocale(), {month: "long", year: "numeric"}))
             ;
         }
     }
@@ -341,11 +380,28 @@ function teleperiod(settings) {
         var y = mouse[1];
 
         var day = Math.floor(x / telep.getDateWidth());
+        x = (1 + day) * telep.getDateWidth();
 
-        telep.wtTooltip.attr('x', day);
-        telep.wtTooltip.attr('y', y);
+        var pointerDate = new Date(telep.floatFrom.initDate);
+        pointerDate.setDate(pointerDate.getDate() + day);
 
-        telep.wtTooltip.select('.date').text(x);
+        var min = telep.getMinutesFromY(y);
+
+        var h = Math.floor(min / 60);
+        var i = min % 60;
+        pointerDate.setHours(h,i,0);
+
+        telep.wtTooltip.attr('x', x - 2);
+        telep.wtTooltip.attr('y', y - 5);
+
+        telep.wtTooltip.select('text.wtTooltipDate').text(
+            pointerDate.toLocaleDateString(telep.getDateLocale())
+        );
+
+        telep.wtTooltip.select('text.wtTooltipHour').text(
+            pointerDate.toLocaleTimeString(telep.getDateLocale(), {hour: "2-digit", minute: "2-digit" })
+        );
+
     }
 
 
