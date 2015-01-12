@@ -16,6 +16,7 @@ function teleperiod(settings) {
     this.settings = settings;
 
     this.main = null;
+    this.wtTooltip = null;
 
     this.workingtimesEvents = [];
 
@@ -104,6 +105,14 @@ function teleperiod(settings) {
     this.createMain = function()
     {
         telep.main = telep.viewport.append('svg');
+        telep.wtTooltip = telep.viewport.append('svg')
+            .attr("class", "wtTooltip")
+            .style("opacity", 0)
+
+        ;
+
+        telep.wtTooltip.append('text').attr('class', 'date');
+        telep.wtTooltip.append('text').attr('class', 'hour');
 
         telep.leftButton();
         telep.rightButton();
@@ -119,6 +128,7 @@ function teleperiod(settings) {
 
         telep.initFloatDates();
     }
+
 
 
     this.leftButton = function()
@@ -181,7 +191,7 @@ function teleperiod(settings) {
     this.getDateX = function(d)
     {
         var s  = ((d.getTime() - telep.floatFrom.currentDate.getTime()) /1000);
-        var days = Math.floor(s/ 86400);
+        var days = Math.ceil(s/ 86400);
 
         return days * telep.getDateWidth();
     }
@@ -291,7 +301,9 @@ function teleperiod(settings) {
     {
         for (var i=0; i < workingtimes.length; i++) {
             var event = workingtimes[i];
-            var x = telep.getDateX(event.dtstart);
+            var day = new Date(event.dtstart);
+            day.setHours(0,0,0);
+            var x = telep.getDateX(day);
             var yStart = telep.getDateY(event.dtstart);
             var yEnd = telep.getDateY(event.dtend);
 
@@ -301,11 +313,40 @@ function teleperiod(settings) {
                 .attr('y', yStart)
                 .attr('height', yEnd - yStart)
                 .attr('width', telep.getDateWidth() -1)
+                .on('mouseover', function() {
+                    telep.wtTooltip
+                        .transition()
+                        .duration(200)
+                        .style("opacity", 1);
+                })
+                .on('mouseout', function() {
+                    telep.wtTooltip
+                        .transition()
+                        .duration(500)
+                        .style("opacity", 0);
+                })
+                .on('mousemove', telep.updateWtTooltip)
             ;
 
         }
     }
 
+
+
+
+    this.updateWtTooltip = function()
+    {
+        var mouse = d3.mouse(this);
+        var x = mouse[0];
+        var y = mouse[1];
+
+        var day = Math.floor(x / telep.getDateWidth());
+
+        telep.wtTooltip.attr('x', day);
+        telep.wtTooltip.attr('y', y);
+
+        telep.wtTooltip.select('.date').text(x);
+    }
 
 
     this.createSpaceOnLeft = function(nbDays) {

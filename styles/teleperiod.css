@@ -78,3 +78,10 @@
 #teleperiod_placeholder .button:hover {
     opacity:.9;
 }
+
+
+#teleperiod_placeholder .wtTooltip {
+    fill:#ffa05b;
+    width:50;
+    height:50;
+}
