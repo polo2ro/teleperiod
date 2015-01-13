@@ -18,6 +18,7 @@
             var teleperiod = new teleperiod({
                 object: d3.select('#teleperiod_placeholder'),
                 workingtimes: function(interval) {
+
                     var workingtimes = [];
                     var loop = new Date(interval.from);
                     while (loop.getTime() < interval.to.getTime()) {

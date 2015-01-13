@@ -22,7 +22,7 @@
 
 }
 
-#teleperiod_placeholder .workingtime {
+#teleperiod_placeholder .day .workingtime {
     fill:rgba(150, 150, 150, .15);
     cursor:pointer;
 }

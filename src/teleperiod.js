@@ -24,6 +24,8 @@ function teleperiod(settings) {
 
     this.loadedIntervals = [];
 
+    this.dayGroupByDate = {};
+
 
     this.getWidth = function() {
         return this.settings.width || 1000;
@@ -203,8 +205,13 @@ function teleperiod(settings) {
         var loopDate = new Date(from);
 
         while (loopDate < to) {
-            telep.drawDate(loopDate);
+            var day_date = new Date(loopDate);
+            var day_group = telep.drawDate(loopDate);
             loopDate.setDate(loopDate.getDate()+1);
+
+            day_date.setHours(0,0,0);
+
+            telep.dayGroupByDate[day_date] = day_group;
         };
 
 
@@ -226,7 +233,7 @@ function teleperiod(settings) {
 
 
     /**
-     * convert a date to a Y position
+     * convert a date to a Y position inside the day group
      * @param   {Date} d [[Description]]
      * @returns {int} [[Description]]
      */
@@ -235,11 +242,29 @@ function teleperiod(settings) {
         var minutes = (d.getHours() * 60) + d.getMinutes();
         var minFromStart = minutes - telep.getDayFirstMinute();
         var minTotal = telep.getDayLastMinute() - telep.getDayFirstMinute();
-        return telep.getHeaderHeight() + Math.round(minFromStart * telep.getDateHeight() / minTotal);
+        return Math.round(minFromStart * telep.getDateHeight() / minTotal);
     }
 
+
     /**
-     * convert y position to a number of minutes
+     * Get date from X
+     *
+     * @param   {Int} x [[Description]]
+     * @returns {Date} [[Description]]
+     */
+    this.getDateFromX = function(x)
+    {
+        var daysFromOrigin = Math.ceil(x / telep.getDateWidth());
+        var date = new Date(telep.floatFrom.currentDate);
+        date.setDate(date.getDate() + daysFromOrigin);
+        date.setHours(0,0,0);
+
+        return date;
+    }
+
+
+    /**
+     * convert y position to a number of minutes inside the day group
      * @param   {int} y [[Description]]
      * @returns {int} [[Description]]
      */
@@ -248,8 +273,7 @@ function teleperiod(settings) {
         var minTotal = telep.getDayLastMinute() - telep.getDayFirstMinute();
         var yPerMin = (telep.getDateHeight() / minTotal);
 
-        var minutes = telep.getDayFirstMinute() + Math.round((y - telep.getHeaderHeight()) / yPerMin);
-
+        var minutes = telep.getDayFirstMinute() + Math.round((y +telep.getHeaderHeight()) / yPerMin);
         return minutes;
     }
 
@@ -304,6 +328,9 @@ function teleperiod(settings) {
             .text(d.toLocaleDateString(telep.getDateLocale(), {month: "long", year: "numeric"}))
             ;
         }
+
+
+        return g;
     }
 
 
@@ -356,9 +383,11 @@ function teleperiod(settings) {
             var yStart = telep.getDateY(event.dtstart);
             var yEnd = telep.getDateY(event.dtend);
 
-            telep.main.append('rect')
+            var dayGroup = telep.dayGroupByDate[day];
+
+            dayGroup.append('rect')
                 .attr('class', 'workingtime')
-                .attr('x', x)
+              //  .attr('x', x)
                 .attr('y', yStart)
                 .attr('height', yEnd - yStart)
                 .attr('width', telep.getDateWidth() -1)
@@ -389,11 +418,10 @@ function teleperiod(settings) {
         var x = mouse[0];
         var y = mouse[1];
 
-        var day = Math.floor(x / telep.getDateWidth());
-        x = day * telep.getDateWidth();
+        var g = d3.select(this.parentNode);
+        var x = parseInt(g.attr('transform').match(/translate\((\d+),\d+\)/)[1], 10);
 
-        var pointerDate = new Date(telep.floatFrom.initDate);
-        pointerDate.setDate(pointerDate.getDate() + day);
+        var pointerDate = telep.getDateFromX(x);
 
         var min = telep.getMinutesFromY(y);
 
@@ -425,8 +453,18 @@ function teleperiod(settings) {
     this.createSpaceOnLeft = function(nbDays) {
 
         telep.main.selectAll('.day').transition().attr('transform', function() {
+
+            if (!this || null == this.getAttribute) {
+                return null;
+            }
+
             var m = this.getAttribute('transform').match(/\((\d+),(\d+)\)/);
-            var newX = parseInt(m[1], 10)+ (nbDays * telep.getDateWidth()) ;
+
+            if (!m) {
+                return null;
+            }
+
+            var newX = parseInt(m[1], 10)+ (nbDays * telep.getDateWidth());
 
             return 'translate('+newX+','+m[2]+')';
         });
