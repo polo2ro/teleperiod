@@ -110,18 +110,28 @@ function teleperiod(settings) {
     {
         telep.main = telep.viewport.append('svg');
         telep.wtTooltip = telep.viewport.append('svg')
-            .attr('width', 100)
+            .attr('width', telep.getDateWidth() + 100)
             .attr('height', 50)
             .style("opacity", 0)
         ;
 
         telep.wtTooltip.append('polygon')
             .attr("class", "wtTooltip")
+            .attr('transform', 'translate('+telep.getDateWidth()+',0)')
             .attr('points', '15,0 100,0 100,50 15,50 15,25 0,2 15,8')
         ;
 
-        telep.wtTooltip.append('text').attr('y', 20).attr('x', 23).attr('class', 'wtTooltipDate');
-        telep.wtTooltip.append('text').attr('y', 40).attr('x', 23).attr('class', 'wtTooltipHour');
+        telep.wtTooltip.append('line')
+            .attr('x1', 0).attr('y1', 3)
+            .attr('x2', telep.getDateWidth() -1).attr('y2', 3)
+            .attr('stroke', "red")
+            .attr('stroke-width', "2")
+        ;
+
+        var textX = telep.getDateWidth() + 23;
+
+        telep.wtTooltip.append('text').attr('y', 20).attr('x', textX).attr('class', 'wtTooltipDate');
+        telep.wtTooltip.append('text').attr('y', 40).attr('x', textX).attr('class', 'wtTooltipHour');
 
         telep.leftButton();
         telep.rightButton();
@@ -380,7 +390,7 @@ function teleperiod(settings) {
         var y = mouse[1];
 
         var day = Math.floor(x / telep.getDateWidth());
-        x = (1 + day) * telep.getDateWidth();
+        x = day * telep.getDateWidth();
 
         var pointerDate = new Date(telep.floatFrom.initDate);
         pointerDate.setDate(pointerDate.getDate() + day);
@@ -389,10 +399,17 @@ function teleperiod(settings) {
 
         var h = Math.floor(min / 60);
         var i = min % 60;
+
+        // round every 10 min
+        i = Math.round(i / 10) * 10;
+
         pointerDate.setHours(h,i,0);
 
-        telep.wtTooltip.attr('x', x - 2);
-        telep.wtTooltip.attr('y', y - 5);
+        // set the y position according to the rounded date
+        y = telep.getDateY(pointerDate);
+
+        telep.wtTooltip.attr('x', x);
+        telep.wtTooltip.attr('y', y - 4);
 
         telep.wtTooltip.select('text.wtTooltipDate').text(
             pointerDate.toLocaleDateString(telep.getDateLocale())

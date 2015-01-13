@@ -84,7 +84,13 @@
 #teleperiod_placeholder .wtTooltip {
     fill:#ffa05b;
     opacity:.7;
+    pointer-events: none;
 }
+
+#teleperiod_placeholder .wtTooltip * {
+    pointer-events: none;
+}
+
 
 #teleperiod_placeholder .wtTooltipDate,
 #teleperiod_placeholder .wtTooltipHour {
