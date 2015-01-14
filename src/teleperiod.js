@@ -26,6 +26,8 @@ function teleperiod(settings) {
 
     this.dayGroupByDate = {};
 
+    this.queued = [];
+
 
     this.getWidth = function() {
         return this.settings.width || 1000;
@@ -158,7 +160,7 @@ function teleperiod(settings) {
             .attr('width', telep.getButtonWidth())
             .attr('height', telep.getHeaderHeight())
             .attr('class', 'button')
-            .on("click", telep.backward)
+            .on("click", function() { telep.queue(telep.backward); })
         ;
 
         group.append('rect')
@@ -182,7 +184,7 @@ function teleperiod(settings) {
             .attr('height', telep.getHeaderHeight())
             .attr('class', 'button')
             .attr('x', telep.getWidth() - telep.getButtonWidth())
-            .on("click", telep.forward)
+            .on("click", function() { telep.queue(telep.forward); })
         ;
 
         group.append('rect')
@@ -452,11 +454,7 @@ function teleperiod(settings) {
 
     this.createSpaceOnLeft = function(nbDays) {
 
-        telep.main.selectAll('.day').transition().attr('transform', function() {
-
-            if (!this || null == this.getAttribute) {
-                return null;
-            }
+        return telep.main.selectAll('.day').transition().attr('transform', function() {
 
             var m = this.getAttribute('transform').match(/\((\d+),(\d+)\)/);
 
@@ -471,12 +469,56 @@ function teleperiod(settings) {
     }
 
 
+    /**
+     * Slide main frame into viewport
+     * @param   {Int} nbDays number of days to slide
+     *
+     */
     this.slideMain = function(nbDays) {
 
-        telep.main.transition().attr('x', function() {
+        return telep.main.transition().attr('x', function() {
             return parseInt(this.getAttribute('x'), 10) + (nbDays * telep.getDateWidth());
         });
     }
+
+
+    /**
+     * Process functions in queue
+     * @param {function} fn function must return a d3 transition
+     */
+    this.queue = function(fn) {
+        telep.queued.push(fn);
+
+        if (1 < telep.queued.length) {
+            console.log('Skip process in queue');
+            return;
+        }
+
+        telep.processQueued();
+    }
+
+    this.processQueued = function() {
+
+        var oldest = telep.queued[0];
+        var transition = oldest();
+
+        var transitions = 0;
+
+        transition.each( "start", function() {
+            transitions++;
+        }).each( "end", function() {
+            if( --transitions === 0 ) {
+                telep.queued.shift();
+
+                if (0 >= telep.queued.length) {
+                    return false;
+                }
+
+                telep.processQueued();
+            }
+        });
+    }
+
 
 
     /**
@@ -494,13 +536,11 @@ function teleperiod(settings) {
         if (telep.viewportFrom < telep.floatFrom.dayPosition) {
             var enlarge = telep.viewportFrom - telep.floatFrom.dayPosition;
 
-            telep.createSpaceOnLeft(-1 * enlarge);
             telep.floatFrom.add(enlarge);
-
-            return;
+            return telep.createSpaceOnLeft(-1 * enlarge);
         }
 
-        telep.slideMain(telep.getMoveDays());
+        return telep.slideMain(telep.getMoveDays());
     }
 
     /**
@@ -510,8 +550,6 @@ function teleperiod(settings) {
 
         telep.viewportFrom += telep.getMoveDays();
         telep.viewportTo += telep.getMoveDays();
-
-        telep.slideMain(-1 * telep.getMoveDays());
 
         if (telep.viewportTo > telep.floatTo.dayPosition) {
 
@@ -523,5 +561,7 @@ function teleperiod(settings) {
 
             telep.floatTo.add(enlarge);
         }
+
+        return telep.slideMain(-1 * telep.getMoveDays());
     }
 }
