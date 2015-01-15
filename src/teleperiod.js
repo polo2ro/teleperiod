@@ -454,6 +454,9 @@ function teleperiod(settings) {
 
     this.createSpaceOnLeft = function(nbDays) {
 
+        var currentwidth = parseInt(telep.main.attr('width'), 10);
+        telep.main.attr('width', currentwidth + (nbDays * telep.getDateWidth()));
+
         return telep.main.selectAll('.day').transition().attr('transform', function() {
 
             var m = this.getAttribute('transform').match(/\((\d+),(\d+)\)/);
@@ -536,8 +539,11 @@ function teleperiod(settings) {
         if (telep.viewportFrom < telep.floatFrom.dayPosition) {
             var enlarge = telep.viewportFrom - telep.floatFrom.dayPosition;
 
+
+            var transition = telep.createSpaceOnLeft(-1 * enlarge);
             telep.floatFrom.add(enlarge);
-            return telep.createSpaceOnLeft(-1 * enlarge);
+
+            return transition;
         }
 
         return telep.slideMain(telep.getMoveDays());
