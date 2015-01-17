@@ -16,6 +16,7 @@ function teleperiod(settings) {
     this.settings = settings;
 
     this.main = null;
+
     this.wtTooltip = null;
 
     this.workingtimesEvents = [];
@@ -27,6 +28,8 @@ function teleperiod(settings) {
     this.dayGroupByDate = {};
 
     this.queued = [];
+
+    this.selection = new selection(this);
 
 
     this.getWidth = function() {
@@ -130,6 +133,7 @@ function teleperiod(settings) {
             .attr('x2', telep.getDateWidth() -1).attr('y2', 3)
             .attr('stroke', "red")
             .attr('stroke-width', "2")
+            .attr('pointer-events', 'none');
         ;
 
         var textX = telep.getDateWidth() + 23;
@@ -406,21 +410,25 @@ function teleperiod(settings) {
                         .style("opacity", 0);
                 })
                 .on('mousemove', telep.updateWtTooltip)
+                .on('click', function() {
+                    telep.selection.setDate(telep.getPointerDate(this));
+                })
             ;
 
         }
     }
 
 
-
-
-    this.updateWtTooltip = function()
+    /**
+     * @return {Date}
+     */
+    this.getPointerDate = function(workingTimesItem)
     {
-        var mouse = d3.mouse(this);
+        var mouse = d3.mouse(workingTimesItem);
         var x = mouse[0];
         var y = mouse[1];
 
-        var g = d3.select(this.parentNode);
+        var g = d3.select(workingTimesItem.parentNode);
         var x = parseInt(g.attr('transform').match(/translate\((\d+),\d+\)/)[1], 10);
 
         var pointerDate = telep.getDateFromX(x);
@@ -434,6 +442,24 @@ function teleperiod(settings) {
         i = Math.round(i / 10) * 10;
 
         pointerDate.setHours(h,i,0);
+
+        return pointerDate;
+    }
+
+
+
+    this.updateWtTooltip = function()
+    {
+
+
+        var pointerDate = telep.getPointerDate(this);
+
+        var mouse = d3.mouse(this);
+        var x = mouse[0];
+        var y = mouse[1];
+
+        var g = d3.select(this.parentNode);
+        x = parseInt(g.attr('transform').match(/translate\((\d+),\d+\)/)[1], 10);
 
         // set the y position according to the rounded date
         y = telep.getDateY(pointerDate);
