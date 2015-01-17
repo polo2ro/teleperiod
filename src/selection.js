@@ -23,6 +23,20 @@ function selection(teleperiod) {
     var selection = this;
 
 
+
+    /**
+     * @return {boolean}
+     */
+    this.isValid = function()
+    {
+        if (null === selection.dtend || null === selection.dtstart) {
+            return false;
+        }
+
+        return (selection.dtstart.getTime() < selection.dtend.getTime())
+    }
+
+
     /**
      * set new date
      * if the pointer_date is the first date, define the dtstart,
@@ -37,16 +51,18 @@ function selection(teleperiod) {
      */
     this.setDate = function(pointer_date)
     {
-        console.log(pointer_date);
-
-        if (null === selection.dtstart || selection.dtstart.getTime() > pointer_date.getTime()) {
+        if (null === selection.dtstart || selection.dtstart.getTime() > pointer_date.getTime() || selection.isValid()) {
             selection.dtstart = pointer_date;
             selection.dtend = null;
             return false;
         }
 
+
         if (selection.dtstart.getTime() < pointer_date.getTime()) {
             selection.dtend = pointer_date;
+
+            console.log(selection.getValidPeriods());
+
             return true;
         }
 
@@ -61,6 +77,9 @@ function selection(teleperiod) {
      */
     this.getValidPeriods = function()
     {
-
+        return [{
+            dtstart: selection.dtstart,
+            dtend: selection.dtend
+        }];
     }
 }
