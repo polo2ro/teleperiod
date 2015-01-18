@@ -100,6 +100,10 @@ function selection(teleperiod) {
            return p;
         }
 
+        if (p.dtstart >= selection.dtend || p.dtend<= selection.dtstart) {
+            return null;
+        }
+
         var cropped = {};
 
         cropped.dtstart = p.dtstart >= selection.dtstart ? p.dtstart : selection.dtstart;
@@ -117,7 +121,7 @@ function selection(teleperiod) {
     {
         var loop = new Date(selection.dtstart);
         loop.setHours(0, 0, 0);
-        var indexDate, workingtime;
+        var indexDate, workingtime, cropped;
         var workingtimes = [];
 
         while(loop < selection.dtend) {
@@ -126,7 +130,10 @@ function selection(teleperiod) {
                 var workingTimesOnDay = selection.teleperiod.workingtimesEvents[loop];
 
                 for(var i=0; i<workingTimesOnDay.length; i++) {
-                    workingtimes.push(selection.cropPeriod(workingTimesOnDay[i]));
+
+                    if (cropped = selection.cropPeriod(workingTimesOnDay[i])) {
+                        workingtimes.push(cropped);
+                    }
                 }
             }
 
@@ -156,6 +163,9 @@ function selection(teleperiod) {
      */
     this.addOverlay = function(dayGroup, event)
     {
+        console.log(event.dtstart.toLocaleTimeString());
+        console.log(event.dtend.toLocaleTimeString());
+
         var yStart = selection.teleperiod.getDateY(event.dtstart);
         var yEnd = selection.teleperiod.getDateY(event.dtend);
 
