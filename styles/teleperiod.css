@@ -27,6 +27,11 @@
     cursor:pointer;
 }
 
+#teleperiod_placeholder .day .selection {
+    fill:rgba(255, 100, 100, .5);
+    cursor:pointer;
+}
+
 
 #teleperiod_placeholder .day .weekday {
     fill:#bbb;

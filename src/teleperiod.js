@@ -19,7 +19,10 @@ function teleperiod(settings) {
 
     this.wtTooltip = null;
 
-    this.workingtimesEvents = [];
+    /**
+     * Working times events indexed by day
+     */
+    this.workingtimesEvents = {};
 
     this.timelines = [];
 
@@ -361,9 +364,18 @@ function teleperiod(settings) {
         telep.loadedIntervals.push(interval);
 
         var arr = telep.settings.workingtimes(interval);
+        var indexDate;
 
         for(var i=0; i<arr.length; i++) {
-            telep.workingtimesEvents.push(arr[i]);
+
+            indexDate = new Date(arr[i].dtstart);
+            indexDate.setHours(0, 0, 0);
+
+            if (telep.workingtimesEvents[indexDate] == undefined) {
+                telep.workingtimesEvents[indexDate] = [];
+            }
+
+            telep.workingtimesEvents[indexDate].push(arr[i]);
             workingtimes.push(arr[i]);
         }
 
@@ -376,6 +388,26 @@ function teleperiod(settings) {
 
 
     /**
+     * get day group element from date
+     * @param {Date} d
+     *
+     * @return {array}
+     */
+    this.getDayGroupByDate = function(d)
+    {
+        var day = new Date(d);
+        day.setHours(0,0,0);
+
+        if (telep.dayGroupByDate[day] == undefined) {
+            return null;
+        }
+
+        return telep.dayGroupByDate[day];
+    }
+
+
+
+    /**
      * Add workingtimes periods on exiting days
      * @param {Array} workingtimes [[Description]]
      */
@@ -383,13 +415,11 @@ function teleperiod(settings) {
     {
         for (var i=0; i < workingtimes.length; i++) {
             var event = workingtimes[i];
-            var day = new Date(event.dtstart);
-            day.setHours(0,0,0);
-            var x = telep.getDateX(day);
+            var x = telep.getDateX(event.dtstart);
             var yStart = telep.getDateY(event.dtstart);
             var yEnd = telep.getDateY(event.dtend);
 
-            var dayGroup = telep.dayGroupByDate[day];
+            var dayGroup = telep.getDayGroupByDate(event.dtstart);
 
             dayGroup.append('rect')
                 .attr('class', 'workingtime')
@@ -412,6 +442,10 @@ function teleperiod(settings) {
                 .on('mousemove', telep.updateWtTooltip)
                 .on('click', function() {
                     telep.selection.setDate(telep.getPointerDate(this));
+                    if (telep.selection.isValid()) {
+                        telep.selection.highlightPeriods();
+                        console.log(telep.selection.getValidPeriods());
+                    }
                 })
             ;
 

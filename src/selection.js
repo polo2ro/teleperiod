@@ -60,14 +60,52 @@ function selection(teleperiod) {
 
         if (selection.dtstart.getTime() < pointer_date.getTime()) {
             selection.dtend = pointer_date;
-
-            console.log(selection.getValidPeriods());
-
             return true;
         }
 
 
         return false;
+    }
+
+    /**
+     * Get the list of <g> elements for the period
+     * @return array
+     */
+    this.getDayGroups = function()
+    {
+        var loop = new Date(selection.dtstart);
+        var daygroup;
+        var g = [];
+
+        while(loop < selection.dtend) {
+
+            daygroup = selection.teleperiod.getDayGroupByDate(loop);
+            g.push(daygroup);
+
+            loop.setDate(loop.getDate() +1);
+        }
+
+        return g;
+    }
+
+
+    /**
+     * create a cropped period or return the same period if the given parameter is included in selection
+     * @param {object} p
+     * @return {object}
+     */
+    this.cropPeriod = function(p)
+    {
+        if (p.dtstart >= selection.dtstart && p.dtend <= selection.dtend) {
+           return p;
+        }
+
+        var cropped = {};
+
+        cropped.dtstart = p.dtstart >= selection.dtstart ? p.dtstart : selection.dtstart;
+        cropped.dtend = p.dtend <= selection.dtend ? p.dtend : selection.dtend;
+
+        return cropped;
     }
 
 
@@ -77,9 +115,59 @@ function selection(teleperiod) {
      */
     this.getValidPeriods = function()
     {
-        return [{
-            dtstart: selection.dtstart,
-            dtend: selection.dtend
-        }];
+        var loop = new Date(selection.dtstart);
+        loop.setHours(0, 0, 0);
+        var indexDate, workingtime;
+        var workingtimes = [];
+
+        while(loop < selection.dtend) {
+
+            if (selection.teleperiod.workingtimesEvents[loop] != undefined) {
+                var workingTimesOnDay = selection.teleperiod.workingtimesEvents[loop];
+
+                for(var i=0; i<workingTimesOnDay.length; i++) {
+                    workingtimes.push(selection.cropPeriod(workingTimesOnDay[i]));
+                }
+            }
+
+            loop.setDate(loop.getDate() +1);
+        }
+
+        return workingtimes;
+    }
+
+    /**
+     * Display the selection on one day
+     */
+    this.highlightPeriods = function()
+    {
+
+        var periods = selection.getValidPeriods();
+
+        for(var i=0; i<periods.length; i++) {
+            var g = selection.teleperiod.getDayGroupByDate(periods[i].dtstart);
+            selection.addOverlay(g, periods[i]);
+        }
+
+    }
+
+    /**
+     *
+     */
+    this.addOverlay = function(dayGroup, event)
+    {
+        var yStart = selection.teleperiod.getDateY(event.dtstart);
+        var yEnd = selection.teleperiod.getDateY(event.dtend);
+
+        dayGroup.append('rect')
+            .attr('class', 'selection')
+            .attr('y', yStart)
+            .attr('height', yEnd - yStart)
+            .attr('width', selection.teleperiod.getDateWidth() -1)
+
+            .on('click', function() {
+                //TODO: remove selection
+            })
+        ;
     }
 }
