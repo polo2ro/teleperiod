@@ -22,7 +22,7 @@ function selection(teleperiod) {
 
     var selection = this;
 
-
+    this.overlayItems = [];
 
     /**
      * @return {boolean}
@@ -54,6 +54,7 @@ function selection(teleperiod) {
         if (null === selection.dtstart || selection.dtstart.getTime() > pointer_date.getTime() || selection.isValid()) {
             selection.dtstart = pointer_date;
             selection.dtend = null;
+            selection.resetOverlay();
             return false;
         }
 
@@ -63,7 +64,7 @@ function selection(teleperiod) {
             return true;
         }
 
-
+        selection.resetOverlay();
         return false;
     }
 
@@ -163,13 +164,12 @@ function selection(teleperiod) {
      */
     this.addOverlay = function(dayGroup, event)
     {
-        console.log(event.dtstart.toLocaleTimeString());
-        console.log(event.dtend.toLocaleTimeString());
-
         var yStart = selection.teleperiod.getDateY(event.dtstart);
         var yEnd = selection.teleperiod.getDateY(event.dtend);
 
-        dayGroup.append('rect')
+        var rect = dayGroup.append('rect');
+
+        rect
             .attr('class', 'selection')
             .attr('y', yStart)
             .attr('height', yEnd - yStart)
@@ -179,5 +179,21 @@ function selection(teleperiod) {
                 //TODO: remove selection
             })
         ;
+
+
+        selection.overlayItems.push(rect);
+
+        return rect;
+    }
+
+
+
+    this.resetOverlay = function()
+    {
+        for (var i=0; i<selection.overlayItems.length; i++) {
+            selection.overlayItems[i].remove();
+        }
+
+        selection.overlayItems = [];
     }
 }

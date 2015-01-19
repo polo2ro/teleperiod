@@ -282,7 +282,7 @@ function teleperiod(settings) {
         var minTotal = telep.getDayLastMinute() - telep.getDayFirstMinute();
         var yPerMin = (telep.getDateHeight() / minTotal);
 
-        var minutes = telep.getDayFirstMinute() + Math.round((y +telep.getHeaderHeight()) / yPerMin);
+        var minutes = telep.getDayFirstMinute() + Math.round(y / yPerMin);
         return minutes;
     }
 
@@ -477,6 +477,8 @@ function teleperiod(settings) {
 
         pointerDate.setHours(h,i,0);
 
+
+
         return pointerDate;
     }
 
@@ -499,7 +501,7 @@ function teleperiod(settings) {
         y = telep.getDateY(pointerDate);
 
         telep.wtTooltip.attr('x', x);
-        telep.wtTooltip.attr('y', y - 4);
+        telep.wtTooltip.attr('y', telep.getHeaderHeight() + y - 4);
 
         telep.wtTooltip.select('text.wtTooltipDate').text(
             pointerDate.toLocaleDateString(telep.getDateLocale())
