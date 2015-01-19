@@ -167,6 +167,7 @@ function teleperiod(settings) {
             .attr('width', telep.getButtonWidth())
             .attr('height', telep.getHeaderHeight())
             .attr('class', 'button')
+            .on('mousedown', function(){ d3.event.preventDefault(); }) // prevent text selection on double-click
             .on("click", function() { telep.queue(telep.backward); })
         ;
 
@@ -191,6 +192,7 @@ function teleperiod(settings) {
             .attr('height', telep.getHeaderHeight())
             .attr('class', 'button')
             .attr('x', telep.getWidth() - telep.getButtonWidth())
+            .on('mousedown', function(){ d3.event.preventDefault(); }) // prevent text selection on double-click
             .on("click", function() { telep.queue(telep.forward); })
         ;
 
@@ -444,7 +446,6 @@ function teleperiod(settings) {
                     telep.selection.setDate(telep.getPointerDate(this));
                     if (telep.selection.isValid()) {
                         telep.selection.highlightPeriods();
-                        console.log(telep.selection.getValidPeriods());
                     }
                 })
             ;
@@ -486,8 +487,6 @@ function teleperiod(settings) {
 
     this.updateWtTooltip = function()
     {
-
-
         var pointerDate = telep.getPointerDate(this);
 
         var mouse = d3.mouse(this);
@@ -495,7 +494,10 @@ function teleperiod(settings) {
         var y = mouse[1];
 
         var g = d3.select(this.parentNode);
+
         x = parseInt(g.attr('transform').match(/translate\((\d+),\d+\)/)[1], 10);
+        x += parseInt(telep.main.attr('x'), 10);
+
 
         // set the y position according to the rounded date
         y = telep.getDateY(pointerDate);
@@ -532,7 +534,6 @@ function teleperiod(settings) {
             return 'translate('+newX+','+m[2]+')';
         });
     }
-
 
     /**
      * Slide main frame into viewport
