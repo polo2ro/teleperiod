@@ -81,6 +81,10 @@ function teleperiod(settings) {
         return this.settings.dayLastMinute || (20 * 60);
     }
 
+    this.getSnapDistance = function() {
+        return this.settings.snapDistance || 10;
+    }
+
     this.getDateLocale = function() {
         return this.settings.dateLocale || 'Fr-fr';
     }
@@ -200,7 +204,6 @@ function teleperiod(settings) {
             .attr('class', 'buttonbg')
             .attr('width', telep.getButtonWidth())
             .attr('height', telep.getHeaderHeight())
-
         ;
 
 
@@ -460,6 +463,9 @@ function teleperiod(settings) {
 
 
     /**
+     * Get rounded date every 10 minutes
+     * @param {HTMLElement} workingTimesItem
+     *
      * @return {Date}
      */
     this.getPointerDate = function(workingTimesItem)
@@ -473,6 +479,23 @@ function teleperiod(settings) {
 
         var pointerDate = telep.getDateFromX(x);
 
+
+
+         // Snap Y to top or bottom if necessary
+
+        var d3Item = d3.select(workingTimesItem);
+        var topY = parseInt(d3Item.attr('y'), 10);
+        var bottomY = topY + parseInt(d3Item.attr('height'), 10);
+        var snap = telep.getSnapDistance();
+
+        if (y - topY < snap) {
+            y = topY;
+        }
+
+        if (bottomY - y < snap) {
+            y = bottomY;
+        }
+
         var min = telep.getMinutesFromY(y);
 
         var h = Math.floor(min / 60);
@@ -485,8 +508,14 @@ function teleperiod(settings) {
 
 
 
+
+
+
+
         return pointerDate;
     }
+
+
 
 
 
