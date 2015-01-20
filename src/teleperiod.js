@@ -236,8 +236,13 @@ function teleperiod(settings) {
      */
     this.getDateX = function(d)
     {
-        var s  = ((d.getTime() - telep.floatFrom.currentDate.getTime()) /1000);
-        var days = Math.ceil(s/ 86400);
+        var ds = d.getTime() /1000;
+        var fs = telep.floatFrom.currentDate.getTime() /1000;
+
+        var dd = Math.ceil(ds /86400);
+        var fd = Math.ceil(fs /86400);
+
+        var days = dd - fd;
 
         return days * telep.getDateWidth();
     }
