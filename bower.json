@@ -9,6 +9,7 @@
     "public"
   ],
   "dependencies": {
-    "d3": "~3.5.3"
+    "d3": "~3.5.3",
+    "bootstrap-css-only": "~3.0.0"
   }
 }
