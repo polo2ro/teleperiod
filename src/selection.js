@@ -61,6 +61,11 @@ function selection(teleperiod) {
 
         if (selection.dtstart.getTime() < pointer_date.getTime()) {
             selection.dtend = pointer_date;
+
+            if (selection.teleperiod.settings.onUpdated) {
+                selection.teleperiod.settings.onUpdated(selection);
+            }
+
             return true;
         }
 
@@ -184,6 +189,9 @@ function selection(teleperiod) {
             })
 
             .on('click', function() {
+
+                selection.dtstart = null;
+                selection.dtend = null;
                 selection.resetOverlay();
             })
         ;
@@ -210,5 +218,10 @@ function selection(teleperiod) {
         }
 
         selection.overlayItems = [];
+
+        if (selection.teleperiod.settings.onUpdated) {
+            selection.teleperiod.settings.onUpdated(selection);
+        }
     }
+
 }

@@ -13,6 +13,7 @@ function teleperiod(settings) {
     var telep = this;
 
     this.viewport = settings.object;
+
     this.settings = settings;
 
     this.main = null;
