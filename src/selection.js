@@ -175,8 +175,16 @@ function selection(teleperiod) {
             .attr('height', yEnd - yStart)
             .attr('width', selection.teleperiod.getDateWidth() -1)
 
+            .on('mouseover', function() {
+                selection.setOverlayClassed('mouseover' , true);
+            })
+
+            .on('mouseout', function() {
+                selection.setOverlayClassed('mouseover' , false);
+            })
+
             .on('click', function() {
-                //TODO: remove selection
+                selection.resetOverlay();
             })
         ;
 
@@ -186,6 +194,13 @@ function selection(teleperiod) {
         return rect;
     }
 
+
+    this.setOverlayClassed = function(classname, status)
+    {
+        for (var i=0; i<selection.overlayItems.length; i++) {
+            selection.overlayItems[i].classed(classname , status);
+        }
+    }
 
 
     this.resetOverlay = function()

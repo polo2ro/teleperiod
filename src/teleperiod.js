@@ -573,7 +573,7 @@ function teleperiod(settings) {
         telep.queued.push(fn);
 
         if (1 < telep.queued.length) {
-            console.log('Skip process in queue');
+            // console.log('Skip process in queue');
             return;
         }
 
@@ -641,16 +641,10 @@ function teleperiod(settings) {
 
         // move the days in main frame 7 days to the right (create space for 7 days)
 
-
-
         if (telep.viewportFrom < telep.floatFrom.dayPosition) {
             var enlarge = telep.viewportFrom - telep.floatFrom.dayPosition;
-
-
             var transition = telep.createSpaceOnLeft(-1 * enlarge);
             telep.floatFrom.add(enlarge);
-
-            //return transition;
         }
 
         return telep.slideMain(telep.getMoveDays());
