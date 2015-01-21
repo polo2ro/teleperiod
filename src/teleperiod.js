@@ -550,24 +550,7 @@ function teleperiod(settings) {
     }
 
 
-    this.createSpaceOnLeft = function(nbDays) {
 
-        var currentwidth = parseInt(telep.main.attr('width'), 10);
-        telep.main.attr('width', currentwidth + (nbDays * telep.getDateWidth()));
-
-        return telep.main.selectAll('.day').transition().attr('transform', function() {
-
-            var m = this.getAttribute('transform').match(/\((\d+),(\d+)\)/);
-
-            if (!m) {
-                return null;
-            }
-
-            var newX = parseInt(m[1], 10)+ (nbDays * telep.getDateWidth());
-
-            return 'translate('+newX+','+m[2]+')';
-        });
-    }
 
     /**
      * Slide main frame into viewport
@@ -620,6 +603,33 @@ function teleperiod(settings) {
     }
 
 
+    /**
+     * @param {int} nbDays
+     */
+    this.createSpaceOnLeft = function(nbDays) {
+
+        var currentwidth = parseInt(telep.main.attr('width'), 10);
+        telep.main.attr('width', currentwidth + (nbDays * telep.getDateWidth()));
+
+        telep.main.attr('x', function() {
+            return parseInt(this.getAttribute('x'), 10) - (nbDays * telep.getDateWidth());
+        });
+
+        return telep.main.selectAll('.day').attr('transform', function() {
+
+            var m = this.getAttribute('transform').match(/\((\d+),(\d+)\)/);
+
+            if (!m) {
+                return null;
+            }
+
+            var newX = parseInt(m[1], 10)+ (nbDays * telep.getDateWidth());
+
+            return 'translate('+newX+','+m[2]+')';
+        });
+    }
+
+
 
     /**
      * Click the left button
@@ -640,7 +650,7 @@ function teleperiod(settings) {
             var transition = telep.createSpaceOnLeft(-1 * enlarge);
             telep.floatFrom.add(enlarge);
 
-            return transition;
+            //return transition;
         }
 
         return telep.slideMain(telep.getMoveDays());
