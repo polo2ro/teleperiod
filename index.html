@@ -37,28 +37,37 @@
                 <svg id="teleperiod_placeholder"></svg>
             </div>
 
-            <form>
-              <div class="form-group">
-                <label for="dtstart">Start date</label>
-                <input type="text" class="form-control" id="dtstart" />
-              </div>
-              <div class="form-group">
-                <label for="dtend">End date</label>
-                <input type="text" class="form-control" id="dtend" />
-              </div>
+            <form class="col-md-6">
+                <h3>Selection</h3>
+                <div class="form-group">
+                    <label for="dtstart">Start date</label>
+                    <input type="text" class="form-control" id="dtstart" />
+                </div>
+                <div class="form-group">
+                    <label for="dtend">End date</label>
+                    <input type="text" class="form-control" id="dtend" />
+                </div>
 
-              <button type="submit" class="btn btn-default">Submit</button>
+                <button type="submit" class="btn btn-default">Submit</button>
             </form>
+
+            <div class="col-md-6">
+                <h3>Details</h3>
+
+                <p>Duration: <span class="duration"></span></p>
+
+                <div class="details"></div>
+            </div>
         </div>
 
 
         <script type="text/javascript">
 
-            var formatOptions = {year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" };
-
             var teleperiod = new teleperiod({
                 object: d3.select('#teleperiod_placeholder'),
                 workingtimes: function(interval) {
+
+                    // return working times (selectable periods)
 
                     var workingtimes = [];
                     var loop = new Date(interval.from);
@@ -91,6 +100,33 @@
                     return workingtimes;
                 },
 
+                events: function(interval) {
+
+                    // return other events displayed on the graph
+
+                    var events = [];
+
+                    var loop = new Date(interval.from);
+                    while (loop.getTime() < interval.to.getTime()) {
+                        if (1 === loop.getMonth() && 1 === loop.getDate()) {
+
+                            var newYearDay = {
+                                description: 'New year day'
+                            };
+
+                            newYearDay.dtstart = new Date(loop);
+                            newYearDay.dtstart.setHours(0, 0, 0);
+
+                            newYearDay.dtend = new Date(loop);
+                            newYearDay.dtend.setDate(newYearDay.getDate() + 1);
+
+                            events.push(newYearDay);
+                        }
+
+                        loop.setDate(loop.getDate() + 1);
+                    }
+                },
+
                 onUpdated: function(selection) {
 
                     var dtstart = selection.dtstart ? selection.dtstart.toLocaleString() : null;
@@ -98,6 +134,15 @@
 
                     d3.select('#dtstart').attr('value', dtstart);
                     d3.select('#dtend').attr('value', dtend);
+
+                    d3.select('.duration').text(selection.getDuration()+' ms');
+                    var details = d3.select('.details');
+                    details.selectAll("p").remove();
+
+                    var arr = selection.getValidPeriods();
+                    for(var i=0; i< arr.length; i++) {
+                        details.append('p').text('From '+arr[i].dtstart.toLocaleString()+ ' to '+arr[i].dtend.toLocaleString());
+                    }
                 }
             });
 

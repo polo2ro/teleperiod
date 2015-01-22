@@ -37,7 +37,7 @@ function teleperiod(settings) {
 
 
     this.getWidth = function() {
-        return this.settings.width || 1000;
+        return this.settings.width || telep.viewport.node().parentNode.offsetWidth;
     }
 
     this.getDateWidth = function() {

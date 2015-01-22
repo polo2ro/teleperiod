@@ -224,4 +224,29 @@ function selection(teleperiod) {
         }
     }
 
+
+    /**
+     * Get selection duration in ms
+     * @return {int}
+     */
+    this.getDuration = function()
+    {
+        var periods = selection.getValidPeriods();
+        var duration = 0;
+
+        for(var i=0; i<periods.length; i++) {
+
+            if (periods[i].dtstart && periods[i].dtend) {
+                var start = periods[i].dtstart.getTime();
+                var end = periods[i].dtend.getTime();
+
+                if (start < end) {
+                    duration += (end - start);
+                }
+            }
+        }
+
+        return duration;
+    }
+
 }
