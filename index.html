@@ -107,8 +107,9 @@
                     var events = [];
 
                     var loop = new Date(interval.from);
+
                     while (loop.getTime() < interval.to.getTime()) {
-                        if (1 === loop.getMonth() && 1 === loop.getDate()) {
+                        if (0 === loop.getMonth() && 1 === loop.getDate()) {
 
                             var newYearDay = {
                                 description: 'New year day'
@@ -118,13 +119,15 @@
                             newYearDay.dtstart.setHours(0, 0, 0);
 
                             newYearDay.dtend = new Date(loop);
-                            newYearDay.dtend.setDate(newYearDay.getDate() + 1);
+                            newYearDay.dtend.setDate(newYearDay.dtstart.getDate() + 1);
 
                             events.push(newYearDay);
                         }
 
                         loop.setDate(loop.getDate() + 1);
                     }
+
+                    return events;
                 },
 
                 onUpdated: function(selection) {

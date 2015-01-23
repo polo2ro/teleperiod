@@ -27,6 +27,10 @@
     cursor:pointer;
 }
 
+#teleperiod_placeholder .day .event {
+    fill:rgba(150, 10, 10, .80);
+}
+
 #teleperiod_placeholder .day .selection {
     fill:rgba(0, 0, 255, .8);
     cursor:pointer;

@@ -25,6 +25,11 @@ function teleperiod(settings) {
      */
     this.workingtimesEvents = {};
 
+    /**
+     * Regular events indexed by day
+     */
+    this.events = {};
+
     this.timelines = [];
 
     this.loadedIntervals = [];
@@ -370,9 +375,28 @@ function teleperiod(settings) {
             to: to
         };
 
-        var workingtimes = [];
+
 
         telep.loadedIntervals.push(interval);
+        telep.loadWorkingTimes(interval);
+        telep.loadEvents(interval);
+
+
+        for(var i=0; i<telep.timelines.length; i++) {
+            telep.timelines[i].load(from, to);
+        }
+
+    }
+
+
+    /**
+     * Load working times
+     * index working times by date
+     *
+     */
+    this.loadWorkingTimes = function(interval) {
+
+         var workingtimes = [];
 
         var arr = telep.settings.workingtimes(interval);
         var indexDate;
@@ -390,11 +414,36 @@ function teleperiod(settings) {
             workingtimes.push(arr[i]);
         }
 
-        for(var i=0; i<telep.timelines.length; i++) {
-            telep.timelines[i].load(from, to);
-        }
 
         telep.addWorkingtimes(workingtimes);
+    }
+
+
+    /**
+     * Load event and index by date
+     */
+    this.loadEvents = function(interval) {
+
+        var events = [];
+
+        var arr = telep.settings.events(interval);
+
+        var indexDate;
+
+        for(var i=0; i<arr.length; i++) {
+
+            indexDate = new Date(arr[i].dtstart);
+            indexDate.setHours(0, 0, 0);
+
+            if (telep.events[indexDate] == undefined) {
+                telep.events[indexDate] = [];
+            }
+
+            telep.events[indexDate].push(arr[i]);
+            events.push(arr[i]);
+        }
+
+        telep.addRegularEvents(events);
     }
 
 
@@ -424,8 +473,60 @@ function teleperiod(settings) {
      */
     this.addWorkingtimes = function(workingtimes)
     {
-        for (var i=0; i < workingtimes.length; i++) {
-            var event = workingtimes[i];
+
+        telep.addEvents(workingtimes, 'workingtime', {
+            mouseover: function() {
+                telep.wtTooltip
+                    .transition()
+                    .duration(200)
+                    .style("opacity", 1);
+            },
+            mouseout: function() {
+                telep.wtTooltip
+                    .transition()
+                    .duration(500)
+                    .style("opacity", 0);
+            },
+            mousemove: telep.updateWtTooltip,
+            click: function() {
+                telep.selection.setDate(telep.getPointerDate(this));
+                if (telep.selection.isValid()) {
+                    telep.selection.highlightPeriods();
+                }
+            }
+        });
+    }
+
+
+    this.addRegularEvents = function(events)
+    {
+        telep.addEvents(events, 'event', {
+            mouseover: function() {
+
+            },
+            mouseout: function() {
+
+            },
+            mousemove: function() {
+
+            },
+            click: function() {
+                alert('TODO');
+            }
+        });
+    }
+
+
+
+    /**
+     * @param {array} events the list of events to add
+     * @param {string} className class to set on the created rect
+     * @param {object} cb object with events callback for mouseover, mouseout, mousemove, click
+     */
+    this.addEvents = function(events, className, cb)
+    {
+        for (var i=0; i < events.length; i++) {
+            var event = events[i];
             var x = telep.getDateX(event.dtstart);
             var yStart = telep.getDateY(event.dtstart);
             var yEnd = telep.getDateY(event.dtend);
@@ -433,30 +534,14 @@ function teleperiod(settings) {
             var dayGroup = telep.getDayGroupByDate(event.dtstart);
 
             dayGroup.append('rect')
-                .attr('class', 'workingtime')
-              //  .attr('x', x)
+                .attr('class', className)
                 .attr('y', yStart)
                 .attr('height', yEnd - yStart)
                 .attr('width', telep.getDateWidth() -1)
-                .on('mouseover', function() {
-                    telep.wtTooltip
-                        .transition()
-                        .duration(200)
-                        .style("opacity", 1);
-                })
-                .on('mouseout', function() {
-                    telep.wtTooltip
-                        .transition()
-                        .duration(500)
-                        .style("opacity", 0);
-                })
-                .on('mousemove', telep.updateWtTooltip)
-                .on('click', function() {
-                    telep.selection.setDate(telep.getPointerDate(this));
-                    if (telep.selection.isValid()) {
-                        telep.selection.highlightPeriods();
-                    }
-                })
+                .on('mouseover', cb.mouseover)
+                .on('mouseout', cb.mouseout)
+                .on('mousemove', cb.mousemove)
+                .on('click', cb.click)
             ;
 
         }
