@@ -556,48 +556,66 @@ function teleperiod(settings) {
      */
     this.addEvents = function(events, className, cb)
     {
-        var event, x, yStart, yEnd, loop, dayBegin, dayEnd;
-
         for (var i=0; i < events.length; i++) {
-            event = events[i];
+            telep.drawEvent(events[i], className, cb);
+        }
+    }
 
-            loop = new Date(event.dtstart);
-            while (loop.getTime() < event.dtend.getTime()) {
+
+    /**
+     * @param {object} event
+     * @param {string} className class to set on the created rect
+     * @param {object} cb object with events callback for mouseover, mouseout, mousemove, click
+     */
+    this.drawEvent = function(event, className, cb)
+    {
+        var x, yStart, yEnd, loop, dayBegin, dayEnd;
+
+        loop = new Date(event.dtstart);
+        while (loop.getTime() < event.dtend.getTime()) {
 
 
-                x = telep.getDateX(loop);
+            x = telep.getDateX(loop);
 
-                dayBegin = telep.getDayBegin(loop);
-                dayEnd = telep.getDayEnd(loop);
+            dayBegin = telep.getDayBegin(loop);
+            dayEnd = telep.getDayEnd(loop);
 
-                if (event.dtstart > dayBegin) {
-                    yStart = telep.getDateY(event.dtstart);
-                } else {
-                    yStart = telep.getDateY(dayBegin);
-                }
-
-                if (event.dtend < dayEnd) {
-                    yEnd = telep.getDateY(event.dtend);
-                } else {
-                    yEnd = telep.getDateY(dayEnd);
-                }
-
-                var dayGroup = telep.getDayGroupByDate(loop);
-
-                dayGroup.append('rect')
-                    .attr('class', className)
-                    .attr('y', yStart)
-                    .attr('height', yEnd - yStart)
-                    .attr('width', telep.getDateWidth() -1)
-                    .on('mouseover', cb.mouseover)
-                    .on('mouseout', cb.mouseout)
-                    .on('mousemove', cb.mousemove)
-                    .on('click', cb.click)
-                ;
-
-                loop.setDate(loop.getDate() + 1);
+            if (event.dtstart > dayBegin) {
+                yStart = telep.getDateY(event.dtstart);
+            } else {
+                yStart = telep.getDateY(dayBegin);
             }
 
+            if (event.dtend < dayEnd) {
+                yEnd = telep.getDateY(event.dtend);
+            } else {
+                yEnd = telep.getDateY(dayEnd);
+            }
+
+            var dayGroup = telep.getDayGroupByDate(loop);
+
+            dayGroup.append('rect')
+                .attr('class', className)
+                .attr('y', yStart)
+                .attr('height', yEnd - yStart)
+                .attr('width', telep.getDateWidth() -1)
+                .on('mouseover', cb.mouseover)
+                .on('mouseout', cb.mouseout)
+                .on('mousemove', cb.mousemove)
+                .on('click', cb.click)
+            ;
+
+            if (event.summary) {
+                dayGroup.append('text')
+                    .attr('class', 'summary')
+                    .attr('x', yStart + 5)
+                    .attr('y', -10)
+                    .attr('transform', "rotate(90)")
+                    .text(event.summary)
+                ;
+            }
+
+            loop.setDate(loop.getDate() + 1);
         }
     }
 

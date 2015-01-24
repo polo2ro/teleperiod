@@ -46,8 +46,15 @@
     opacity:.5;
     font-size:12px;
     font-family: Arial;
+}
 
 
+
+#teleperiod_placeholder .day .summary {
+    fill:#fff;
+    opacity:.8;
+    font-size:12px;
+    font-family: Arial;
 }
 
 #teleperiod_placeholder .day .month {
