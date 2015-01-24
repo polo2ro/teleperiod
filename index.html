@@ -112,20 +112,31 @@
                         if (0 === loop.getMonth() && 1 === loop.getDate()) {
 
                             var newYearDay = {
-                                description: 'New year day'
+                                summary: 'New year day'
                             };
 
                             newYearDay.dtstart = new Date(loop);
                             newYearDay.dtstart.setHours(0, 0, 0);
 
-                            newYearDay.dtend = new Date(loop);
+                            newYearDay.dtend = new Date(newYearDay.dtstart);
                             newYearDay.dtend.setDate(newYearDay.dtstart.getDate() + 1);
+
+                            console.log(newYearDay);
 
                             events.push(newYearDay);
                         }
 
+
                         loop.setDate(loop.getDate() + 1);
                     }
+
+
+                    events.push({
+                        summary: 'Test',
+                        dtstart: new Date(2015, 1, 3, 9, 30, 0),
+                        dtend: new Date(2015, 1, 7, 17, 15, 0)
+                    });
+
 
                     return events;
                 },
