@@ -14,7 +14,11 @@ function timeline(name, datasource) {
 
     this.loadedEvents = [];
 
-
+    /**
+     * once attached to teleperiod
+     * @var {teleperiod}
+     */
+    this.teleperiod = null;
 
     var tline = this;
 
@@ -31,6 +35,24 @@ function timeline(name, datasource) {
         for(var i=0; i<arr.length; i++) {
             tline.loadedEvents.push(arr[i]);
         }
+    }
+
+
+    /**
+     * Draw one day
+     * @param {Date} d [[Description]]
+     */
+    this.drawDate = function(d)
+    {
+        var telep = tline.teleperiod;
+
+        var day = telep.main.append('rec')
+                .attr('class', 'timelineday')
+                .attr('x', telep.getDateX(d))
+                .attr('y', telep.getHeaderHeight() + telep.getGraphHeight())
+                .attr('width', telep.getDateWidth())
+                .attr('height', telep.getTimelineHeight());
+
     }
 }
 

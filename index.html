@@ -159,6 +159,24 @@
 
             teleperiod.setSize();
             teleperiod.createMain();
+
+            var vacations = new timeline('Scolar vacations', function(interval) {
+
+                var events = [];
+                var christmas = {
+                    summary: 'Christmas vacations',
+                    dtstart: new Date(2014, 11, 20, 19, 0, 0),
+                    dtend: new Date(2015, 0, 5, 8, 0, 0)
+                }
+
+                if (interval.from < christmas.dtend && interval.to > christmas.dtstart) {
+                    events.push(christmas);
+                }
+
+                return events;
+            });
+
+            teleperiod.addTimeline(vacations);
         </script>
     </body>
 </html>

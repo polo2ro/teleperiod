@@ -54,7 +54,7 @@ function teleperiod(settings) {
     }
 
     this.getHeight = function() {
-        return telep.getHeaderHeight() + telep.getGraphHeight() + (teleperiod.timelines.length * 20);
+        return telep.getHeaderHeight() + telep.getGraphHeight() + (teleperiod.timelines.length * teleperiod.getTimelineHeight());
     }
 
     this.getHeaderHeight = function() {
@@ -64,6 +64,10 @@ function teleperiod(settings) {
 
     this.getGraphHeight = function() {
         return 300;
+    }
+
+    this.getTimelineHeight = function() {
+        return 10;
     }
 
 
@@ -364,8 +368,13 @@ function teleperiod(settings) {
     }
 
 
-    this.addTimeLine = function(name, datasource) {
-        telep.timelines.push(new timeline(name, datasource));
+    /**
+     * add timeline to the bottom of the graph
+     * @param {timeline} timeline object instance
+     */
+    this.addTimeLine = function(timeline) {
+        timeline.teleperiod = telep;
+        telep.timelines.push(timeline);
     };
 
     /**
