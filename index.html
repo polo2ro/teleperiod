@@ -157,8 +157,7 @@
                 }
             });
 
-            teleperiod.setSize();
-            teleperiod.createMain();
+
 
             var vacations = new timeline('Scolar vacations', function(interval) {
 
@@ -176,7 +175,11 @@
                 return events;
             });
 
-            teleperiod.addTimeline(vacations);
+            teleperiod.addTimeLine(vacations);
+
+
+            teleperiod.setSize();
+            teleperiod.createMain();
         </script>
     </body>
 </html>

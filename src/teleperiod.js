@@ -167,7 +167,7 @@ function teleperiod(settings) {
             .attr('class', 'main')
             .attr('x', 0)
             .attr("width", 0)
-            .attr('height', telep.getGraphHeight());
+            .attr('height', telep.getGraphHeight() + 10 + (telep.timelines.length * telep.getTimelineHeight()));
 
 
         telep.initFloatDates();
@@ -274,6 +274,10 @@ function teleperiod(settings) {
             return 0;
         }
 
+        if (minutes > telep.getDayLastMinute()) {
+            return telep.getDayLastMinute();
+        }
+
         var minFromStart = minutes - telep.getDayFirstMinute();
         var minTotal = telep.getDayLastMinute() - telep.getDayFirstMinute();
         return Math.round(minFromStart * telep.getDateHeight() / minTotal);
@@ -326,8 +330,6 @@ function teleperiod(settings) {
                 .attr('class', 'day')
                 .attr('transform', 'translate('+x+','+telep.getHeaderHeight()+')');
 
-
-
             g
                 .append('rect')
                 .attr('width', telep.getDateWidth() - 1)
@@ -362,6 +364,12 @@ function teleperiod(settings) {
             .text(d.toLocaleDateString(telep.getDateLocale(), {month: "long", year: "numeric"}))
             ;
         }
+
+
+        for(var i=0; i<telep.timelines.length; i++) {
+            telep.timelines[i].drawDate(g, d);
+        }
+
 
 
         return g;

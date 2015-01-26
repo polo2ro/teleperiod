@@ -42,14 +42,13 @@ function timeline(name, datasource) {
      * Draw one day
      * @param {Date} d [[Description]]
      */
-    this.drawDate = function(d)
+    this.drawDate = function(g, d)
     {
         var telep = tline.teleperiod;
 
-        var day = telep.main.append('rec')
+        var day = g.append('rect')
                 .attr('class', 'timelineday')
-                .attr('x', telep.getDateX(d))
-                .attr('y', telep.getHeaderHeight() + telep.getGraphHeight())
+                .attr('y', telep.getDateHeight() + 10)
                 .attr('width', telep.getDateWidth())
                 .attr('height', telep.getTimelineHeight());
 
