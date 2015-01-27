@@ -67,7 +67,7 @@ function teleperiod(settings) {
     }
 
     this.getTimelineHeight = function() {
-        return 10;
+        return 20;
     }
 
 
@@ -264,7 +264,7 @@ function teleperiod(settings) {
     /**
      * convert a date to a Y position inside the day group
      * @param   {Date} d [[Description]]
-     * @returns {int} [[Description]]
+     * @returns {int} Size from top
      */
     this.getDateY = function(d)
     {
@@ -546,7 +546,7 @@ function teleperiod(settings) {
     this.getDayBegin = function(d)
     {
         var r = new Date(d);
-        r.setHours(0, 0, 0);
+        r.setHours(0, telep.getDayFirstMinute(), 0);
 
         return r;
     }
@@ -559,7 +559,7 @@ function teleperiod(settings) {
     this.getDayEnd = function(d)
     {
         var r = new Date(d);
-        r.setHours(23, 59, 59);
+        r.setHours(0, telep.getDayLastMinute(), 0);
 
         return r;
     }
