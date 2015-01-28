@@ -158,24 +158,55 @@
             });
 
 
+            function addEvent(interval, events, event)
+            {
+                if (interval.from < event.dtend && interval.to > event.dtstart) {
+                    events.push(event);
+                }
+            }
+
+
 
             var vacations = new timeline('Scolar vacations', function(interval) {
 
                 var events = [];
                 var christmas = {
                     summary: 'Christmas vacations',
-                    dtstart: new Date(2014, 11, 20, 19, 0, 0),
-                    dtend: new Date(2015, 0, 5, 8, 0, 0)
+                    dtstart: new Date(2014, 11, 20, 8, 0, 0),
+                    dtend: new Date(2015, 0, 5, 19, 0, 0)
                 }
 
-                if (interval.from < christmas.dtend && interval.to > christmas.dtstart) {
-                    events.push(christmas);
-                }
+                addEvent(interval, events, christmas);
 
                 return events;
             });
 
             teleperiod.addTimeLine(vacations);
+
+
+
+            var availability = new timeline('Department availability', function(interval) {
+
+                var events = [];
+                var employee1 = {
+                    summary: 'Roberto Carlos',
+                    dtstart: new Date(2015, 0, 2, 8, 0, 0),
+                    dtend: new Date(2015, 0, 7, 22, 0, 0)
+                }
+
+                var employee2 = {
+                    summary: 'Bob Martinez',
+                    dtstart: new Date(2015, 0, 5, 8, 0, 0),
+                    dtend: new Date(2015, 0, 19, 22, 0, 0)
+                }
+
+                addEvent(interval, events, employee1);
+                addEvent(interval, events, employee2);
+
+                return events;
+            });
+
+            teleperiod.addTimeLine(availability);
 
 
 

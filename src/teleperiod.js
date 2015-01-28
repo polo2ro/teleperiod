@@ -70,6 +70,13 @@ function teleperiod(settings) {
         return 20;
     }
 
+    /**
+     * Space between timelines
+     */
+    this.getTimelineMarginTop = function() {
+        return this.settings.timelineMarginTop || 10;
+    }
+
 
     this.getButtonWidth = function() {
         return this.settings.buttonWidth || 30;
@@ -171,6 +178,16 @@ function teleperiod(settings) {
 
 
         telep.initFloatDates();
+
+
+        for(var i=0; i<telep.timelines.length; i++) {
+            telep.viewport.append('text')
+                .attr('class', 'timeline-name')
+                .attr('x', 20)
+                .attr('y', telep.getGraphHeight() + 5 + telep.getTimelineHeight() + i *(telep.getTimelineMarginTop() + telep.getTimelineHeight()))
+                .text(telep.timelines[i].name)
+            ;
+        }
     }
 
 
@@ -367,7 +384,7 @@ function teleperiod(settings) {
 
 
         for(var i=0; i<telep.timelines.length; i++) {
-            telep.timelines[i].drawDate(g, d);
+            telep.timelines[i].drawDate(g, d, i);
         }
 
 

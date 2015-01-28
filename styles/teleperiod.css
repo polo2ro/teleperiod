@@ -127,3 +127,8 @@
     font-size:13px;
     font-weight:bold;
 }
+
+
+#teleperiod_placeholder .timeline-name {
+    fill:#ccc;
+}

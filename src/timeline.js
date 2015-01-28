@@ -73,15 +73,20 @@ function timeline(name, datasource) {
 
     /**
      * Draw one day
+     * @param {array} g day group svg d3 element
      * @param {Date} d [[Description]]
+     * @param {Integer} timelineIndex   timeline position, zero on top
      */
-    this.drawDate = function(g, d)
+    this.drawDate = function(g, d, timelineIndex)
     {
         var telep = tline.teleperiod;
 
+        var ytop = telep.getDateHeight() + telep.getTimelineMarginTop();
+        var timeLineY = (timelineIndex * (telep.getTimelineHeight() + telep.getTimelineMarginTop()));
+
         var day = g.append('rect')
                 .attr('class', 'timelineday')
-                .attr('y', telep.getDateHeight() + 10)
+                .attr('y', ytop + timeLineY)
                 .attr('width', telep.getDateWidth())
                 .attr('height', telep.getTimelineHeight());
 
@@ -120,7 +125,7 @@ function timeline(name, datasource) {
             title.text(content);
         }
 
-        d.attr('style', 'fill:rgba(150, 10, 10, 0.88);');
+        d.attr('style', 'fill:rgba(10, 180, 10, 1);');
     }
 }
 
