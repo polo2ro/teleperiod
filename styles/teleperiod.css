@@ -28,7 +28,7 @@
 }
 
 #teleperiod_placeholder .day .timelineday {
-    fill:rgba(32, 47, 72, 0.78);
+
 }
 
 #teleperiod_placeholder .day .event {
@@ -130,5 +130,6 @@
 
 
 #teleperiod_placeholder .timeline-name {
-    fill:#ccc;
+    fill:#fff;
+    text-shadow: 0px 0px 2px #000;
 }

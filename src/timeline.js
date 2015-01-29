@@ -22,7 +22,15 @@ function timeline(name, datasource) {
      */
     this.teleperiod = null;
 
+    /**
+     * colors by number of events
+     * @var object
+     */
+    this.color = {};
+
     var tline = this;
+
+
 
     /**
      * load timeline between two dates
@@ -88,7 +96,8 @@ function timeline(name, datasource) {
                 .attr('class', 'timelineday')
                 .attr('y', ytop + timeLineY)
                 .attr('width', telep.getDateWidth())
-                .attr('height', telep.getTimelineHeight());
+                .attr('height', telep.getTimelineHeight())
+                .attr('style', 'fill:'+tline.getBackgroundColor()+';');
 
 
 
@@ -107,6 +116,8 @@ function timeline(name, datasource) {
         var title;
         var content = '';
 
+
+
         title = d.select('title');
         if (!title.node()) {
             title = d.append('title');
@@ -114,7 +125,18 @@ function timeline(name, datasource) {
             content = title.text();
         }
 
+
+
+        if (!d.node().__events) {
+            d.node().__events = [];
+        }
+        var events = d.node().__events;
+        events.push(event);
+
+
         if (-1 === content.indexOf(event.summary)) {
+
+
 
             if (content.length > 0) {
                 content += ', '+event.summary;
@@ -122,10 +144,69 @@ function timeline(name, datasource) {
                 content = event.summary;
             }
 
+            console.log(content+' '+events.length);
+
             title.text(content);
         }
 
-        d.attr('style', 'fill:rgba(10, 180, 10, 1);');
+        d.attr('style', 'fill:'+tline.getColor(events.length)+';');
+    }
+
+
+    /**
+     * set color for a number of events
+     * @param {Integer} nbEvents        0 for background color
+     * @param {string} fill color code
+     */
+    this.setColor = function(nbEvents, color)
+    {
+        tline.color[nbEvents] = color;
+    }
+
+
+    /**
+     * @return string
+     */
+    this.getBackgroundColor = function()
+    {
+        if (tline.color[0]) {
+            return tline.color[0];
+        }
+
+        return 'rgba(32, 47, 72, 0.78)';
+    }
+
+    /**
+     * Get the color associated to number of events
+     * or fallback to the nearest color
+     * or fallback to a default color
+     *
+     * @return string nbEvents
+     */
+    this.getColor = function(nbEvents)
+    {
+        if (tline.color[nbEvents]) {
+            return tline.color[nbEvents];
+        }
+
+        var prop = [];
+
+        for (var nb in tline.color) {
+            if (tline.color.hasOwnProperty(nb)) {
+                if (nb > nbEvents) {
+                    continue;
+                }
+
+                prop.push(nb);
+            }
+        }
+
+        if (0 === prop.length) {
+            return 'rgba(10, 180, 10, 1)';
+        }
+
+        prop.sort();
+        return prop.pop();
     }
 }
 

@@ -54,7 +54,13 @@ function teleperiod(settings) {
     }
 
     this.getHeight = function() {
-        return telep.getHeaderHeight() + telep.getGraphHeight() + (teleperiod.timelines.length * teleperiod.getTimelineHeight());
+        return telep.getHeaderHeight()
+            + telep.getGraphHeight()
+            + telep.getTimelinesHeight();
+    }
+
+    this.getTimelinesHeight = function() {
+        return telep.timelines.length * (telep.getTimelineHeight() + telep.getTimelineMarginTop());
     }
 
     this.getHeaderHeight = function() {
@@ -174,7 +180,7 @@ function teleperiod(settings) {
             .attr('class', 'main')
             .attr('x', 0)
             .attr("width", 0)
-            .attr('height', telep.getGraphHeight() + 10 + (telep.timelines.length * telep.getTimelineHeight()));
+            .attr('height', telep.getHeaderHeight() + telep.getGraphHeight() + telep.getTimelinesHeight());
 
 
         telep.initFloatDates();
