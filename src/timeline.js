@@ -46,10 +46,14 @@ function timeline(name, datasource) {
 
         function initLoop(event)
         {
+            var loop;
             if (event.dtstart < from) {
-                return new Date(from);
+                loop = new Date(from);
             }
-            return new Date(event.dtstart);
+            loop = new Date(event.dtstart);
+            loop.setHours(0, 0, 0);
+
+            return loop;
         }
 
         for(var i=0; i<arr.length; i++) {
@@ -58,11 +62,7 @@ function timeline(name, datasource) {
             tline.loadedEvents.push(event);
 
             loop = initLoop(event);
-            while (loop.getTime() < event.dtend.getTime()) {
-
-                if (loop.getTime() > to) {
-                    break;
-                }
+            while (loop.getTime() < event.dtend.getTime() && loop.getTime() < to) {
 
                 dayIndexKey = tline.teleperiod.getDayBegin(loop);
 
@@ -133,21 +133,14 @@ function timeline(name, datasource) {
         var events = d.node().__events;
         events.push(event);
 
-
-        if (-1 === content.indexOf(event.summary)) {
-
-
-
-            if (content.length > 0) {
-                content += ', '+event.summary;
-            } else {
-                content = event.summary;
-            }
-
-            console.log(content+' '+events.length);
-
-            title.text(content);
+        if (content.length > 0) {
+            content += ', '+event.summary;
+        } else {
+            content = event.summary;
         }
+
+        title.text(content);
+
 
         d.attr('style', 'fill:'+tline.getColor(events.length)+';');
     }

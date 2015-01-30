@@ -115,6 +115,7 @@ function teleperiod(settings) {
 
     this.initFloatDates = function() {
         var today = new Date();
+        today.setHours(0, 0, 0);
         telep.floatFrom = new timespanBoundary(today);
         telep.floatTo = new timespanBoundary(today);
 
