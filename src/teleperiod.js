@@ -547,20 +547,7 @@ function teleperiod(settings) {
     this.addRegularEvents = function(events)
     {
 
-        telep.addEvents(events, 'event', {
-            mouseover: function() {
-
-            },
-            mouseout: function() {
-
-            },
-            mousemove: function() {
-
-            },
-            click: function() {
-                alert('TODO');
-            }
-        });
+        telep.addEvents(events, 'event', {});
     }
 
     /**
