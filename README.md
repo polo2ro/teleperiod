@@ -26,6 +26,53 @@ Features
 * Get the duration of the selection period according to working schedule and special events
 
 
+Usage
+-----
+
+Add to page teleperiod.min.js and teleperiod.min.css
+
+create a svg placeholder in page:
+
+    <div class="row">
+        <svg id="teleperiod_placeholder"></svg>
+    </div>
+
+Initilize teleperiod object with options:
+
+    var teleperiod = new teleperiod({
+        object: d3.select('#teleperiod_placeholder'),
+        workingtimes: function(interval) {
+        
+        },
+        events: function(interval) {
+        
+        },
+        onUpdated: function(selection) {
+        
+        }
+    });
+    
+Add some bottom timeline references using the timeline object:
+
+    var timeline = new timeline('My timeline', function(interval) {
+    
+    });
+    
+    teleperiod.addTimeLine(timeline);
+
+Draw the widget:
+
+    teleperiod.draw();
+
+Set a selected period for modifications:
+
+    teleperiod.setSelection(
+        new Date(2015, 1, 10, 0, 0, 0),
+        new Date(2015, 1, 11, 0, 0, 0)
+    );
+
+
+
 Usage exemples
 --------------
 

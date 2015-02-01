@@ -134,7 +134,9 @@ function teleperiod(settings) {
         telep.floatTo.add(viewPortDays);
     }
 
-
+    /**
+     * Set viewport size
+     */
     this.setSize = function() {
         telep.viewport
             .attr("width", telep.getWidth())
@@ -195,6 +197,16 @@ function teleperiod(settings) {
                 .text(telep.timelines[i].name)
             ;
         }
+    }
+
+
+    /**
+     * Draw the teleperiod widget
+     */
+    this.draw = function()
+    {
+        telep.setSize();
+        telep.createMain();
     }
 
 
@@ -856,5 +868,24 @@ function teleperiod(settings) {
         }
 
         return telep.slideMain(-1 * telep.getMoveDays());
+    }
+
+
+    /**
+     * Initialize selection
+     * Highlight period only if working hours exists
+     *
+     * @param {Date} from
+     * @param {Date} to
+     */
+    this.setSelection = function(from, to) {
+        telep.selection.resetOverlay();
+
+        telep.selection.setDate(from);
+        telep.selection.setDate(to);
+
+        if (telep.selection.isValid()) {
+            telep.selection.highlightPeriods();
+        }
     }
 }
