@@ -41,7 +41,7 @@ function timeline(name, datasource) {
     {
 
         var interval = { from: from, to: to };
-        var arr = tline.datasource(interval);
+
         var event, dayIndexKey, loop;
 
         function initLoop(event)
@@ -56,23 +56,28 @@ function timeline(name, datasource) {
             return loop;
         }
 
-        for(var i=0; i<arr.length; i++) {
+        var arr = tline.datasource(interval).then(function(arr) {
+            for(var i=0; i<arr.length; i++) {
 
-            event = arr[i];
-            tline.loadedEvents.push(event);
+                event = arr[i];
+                tline.loadedEvents.push(event);
 
-            loop = initLoop(event);
-            while (loop.getTime() < event.dtend.getTime() && loop.getTime() < to) {
+                loop = initLoop(event);
+                while (loop.getTime() < event.dtend.getTime() && loop.getTime() < to) {
 
-                dayIndexKey = tline.teleperiod.getDayBegin(loop);
+                    dayIndexKey = tline.teleperiod.getDayBegin(loop);
 
-                if (tline.dayIndex[dayIndexKey] != undefined) {
-                    tline.addEventOnDay(tline.dayIndex[dayIndexKey], event);
+                    if (tline.dayIndex[dayIndexKey] != undefined) {
+                        tline.addEventOnDay(tline.dayIndex[dayIndexKey], event);
+                    }
+
+                    loop.setDate(loop.getDate() + 1);
                 }
-
-                loop.setDate(loop.getDate() + 1);
             }
-        }
+        });
+
+
+
     }
 
 

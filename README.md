@@ -37,7 +37,7 @@ create a svg placeholder in page:
         <svg id="teleperiod_placeholder"></svg>
     </div>
 
-Initilize teleperiod object with options:
+Initialize teleperiod object with options:
 
     var teleperiod = new teleperiod({
         object: d3.select('#teleperiod_placeholder'),

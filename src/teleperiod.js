@@ -454,26 +454,28 @@ function teleperiod(settings) {
      */
     this.loadWorkingTimes = function(interval) {
 
-         var workingtimes = [];
+        var workingtimes = [];
 
-        var arr = telep.settings.workingtimes(interval);
-        var indexDate;
+        telep.settings.workingtimes(interval).then(function(arr) {
 
-        for(var i=0; i<arr.length; i++) {
+            var indexDate;
 
-            indexDate = new Date(arr[i].dtstart);
-            indexDate.setHours(0, 0, 0);
+            for(var i=0; i<arr.length; i++) {
 
-            if (telep.workingtimesEvents[indexDate] == undefined) {
-                telep.workingtimesEvents[indexDate] = [];
+                indexDate = new Date(arr[i].dtstart);
+                indexDate.setHours(0, 0, 0);
+
+                if (telep.workingtimesEvents[indexDate] == undefined) {
+                    telep.workingtimesEvents[indexDate] = [];
+                }
+
+                telep.workingtimesEvents[indexDate].push(arr[i]);
+                workingtimes.push(arr[i]);
             }
 
-            telep.workingtimesEvents[indexDate].push(arr[i]);
-            workingtimes.push(arr[i]);
-        }
 
-
-        telep.addWorkingtimes(workingtimes);
+            telep.addWorkingtimes(workingtimes);
+        });
     }
 
 
@@ -483,25 +485,24 @@ function teleperiod(settings) {
     this.loadEvents = function(interval) {
 
         var events = [];
-
-        var arr = telep.settings.events(interval);
-
         var indexDate;
 
-        for(var i=0; i<arr.length; i++) {
+        telep.settings.events(interval).then(function(arr) {
+            for(var i=0; i<arr.length; i++) {
 
-            indexDate = new Date(arr[i].dtstart);
-            indexDate.setHours(0, 0, 0);
+                indexDate = new Date(arr[i].dtstart);
+                indexDate.setHours(0, 0, 0);
 
-            if (telep.events[indexDate] == undefined) {
-                telep.events[indexDate] = [];
+                if (telep.events[indexDate] == undefined) {
+                    telep.events[indexDate] = [];
+                }
+
+                telep.events[indexDate].push(arr[i]);
+                events.push(arr[i]);
             }
 
-            telep.events[indexDate].push(arr[i]);
-            events.push(arr[i]);
-        }
-
-        telep.addRegularEvents(events);
+            telep.addRegularEvents(events);
+        });
     }
 
 

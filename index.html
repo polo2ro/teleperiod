@@ -8,6 +8,7 @@
         <link rel="stylesheet" type="text/css" href="styles/teleperiod.css">
 
         <script type="text/javascript" src="bower_components/d3/d3.min.js"></script>
+        <script type="text/javascript" src="bower_components/q/q.js"></script>
         <script type="text/javascript" src="src/timespan-boundary.js"></script>
         <script type="text/javascript" src="src/teleperiod.js"></script>
         <script type="text/javascript" src="src/timeline.js"></script>
@@ -63,79 +64,84 @@
 
         <script type="text/javascript">
 
+
             var teleperiod = new teleperiod({
                 object: d3.select('#teleperiod_placeholder'),
                 workingtimes: function(interval) {
 
-                    // return working times (selectable periods)
+                    return Q.fcall(function () {
+                        // return working times (selectable periods)
 
-                    var workingtimes = [];
-                    var loop = new Date(interval.from);
-                    while (loop.getTime() < interval.to.getTime()) {
+                        var workingtimes = [];
+                        var loop = new Date(interval.from);
+                        while (loop.getTime() < interval.to.getTime()) {
 
-                        if (loop.getDay() != 0 && loop.getDay() != 6) {
+                            if (loop.getDay() != 0 && loop.getDay() != 6) {
 
-                            var am = {};
-                            var pm = {};
+                                var am = {};
+                                var pm = {};
 
-                            am.dtstart = new Date(loop);
-                            am.dtstart.setHours(9, 0, 0);
+                                am.dtstart = new Date(loop);
+                                am.dtstart.setHours(9, 0, 0);
 
-                            am.dtend = new Date(loop);
-                            am.dtend.setHours(12, 0, 0);
+                                am.dtend = new Date(loop);
+                                am.dtend.setHours(12, 0, 0);
 
-                            pm.dtstart = new Date(loop);
-                            pm.dtstart.setHours(13, 0, 0);
+                                pm.dtstart = new Date(loop);
+                                pm.dtstart.setHours(13, 0, 0);
 
-                            pm.dtend = new Date(loop);
-                            pm.dtend.setHours(18, 0, 0);
+                                pm.dtend = new Date(loop);
+                                pm.dtend.setHours(18, 0, 0);
 
-                            workingtimes.push(am);
-                            workingtimes.push(pm);
+                                workingtimes.push(am);
+                                workingtimes.push(pm);
+                            }
+
+                            loop.setDate(loop.getDate() + 1);
                         }
 
-                        loop.setDate(loop.getDate() + 1);
-                    }
-
-                    return workingtimes;
+                        return workingtimes;
+                    });
                 },
 
                 events: function(interval) {
 
-                    // return other events displayed on the graph
+                    return Q.fcall(function () {
+                        // return other events displayed on the graph
 
-                    var events = [];
+                        var events = [];
 
-                    var loop = new Date(interval.from);
+                        var loop = new Date(interval.from);
 
-                    while (loop.getTime() < interval.to.getTime()) {
-                        if (0 === loop.getMonth() && 1 === loop.getDate()) {
+                        while (loop.getTime() < interval.to.getTime()) {
+                            if (0 === loop.getMonth() && 1 === loop.getDate()) {
 
-                            var newYearDay = {
-                                summary: 'New year day'
-                            };
+                                var newYearDay = {
+                                    summary: 'New year day'
+                                };
 
-                            newYearDay.dtstart = new Date(loop);
-                            newYearDay.dtstart.setHours(0, 0, 0);
+                                newYearDay.dtstart = new Date(loop);
+                                newYearDay.dtstart.setHours(0, 0, 0);
 
-                            newYearDay.dtend = new Date(newYearDay.dtstart);
-                            newYearDay.dtend.setDate(newYearDay.dtstart.getDate() + 1);
-                            events.push(newYearDay);
+                                newYearDay.dtend = new Date(newYearDay.dtstart);
+                                newYearDay.dtend.setDate(newYearDay.dtstart.getDate() + 1);
+                                events.push(newYearDay);
+                            }
+
+
+                            loop.setDate(loop.getDate() + 1);
                         }
 
 
-                        loop.setDate(loop.getDate() + 1);
-                    }
+                        events.push({
+                            summary: 'Test',
+                            dtstart: new Date(2015, 1, 3, 9, 30, 0),
+                            dtend: new Date(2015, 1, 7, 17, 15, 0)
+                        });
 
 
-                    events.push({
-                        summary: 'Test',
-                        dtstart: new Date(2015, 1, 3, 9, 30, 0),
-                        dtend: new Date(2015, 1, 7, 17, 15, 0)
+                        return events;
                     });
-
-
-                    return events;
                 },
 
                 onUpdated: function(selection) {
@@ -169,16 +175,18 @@
 
             var vacations = new timeline('Scolar vacations', function(interval) {
 
-                var events = [];
-                var christmas = {
-                    summary: 'Christmas vacations',
-                    dtstart: new Date(2014, 11, 20, 8, 0, 0),
-                    dtend: new Date(2015, 0, 5, 19, 0, 0)
-                }
+                return Q.fcall(function () {
+                    var events = [];
+                    var christmas = {
+                        summary: 'Christmas vacations',
+                        dtstart: new Date(2014, 11, 20, 8, 0, 0),
+                        dtend: new Date(2015, 0, 5, 19, 0, 0)
+                    }
 
-                addEvent(interval, events, christmas);
+                    addEvent(interval, events, christmas);
 
-                return events;
+                    return events;
+                });
             });
 
             teleperiod.addTimeLine(vacations);
@@ -187,44 +195,47 @@
 
             var availability = new timeline('Department availability', function(interval) {
 
-                var events = [];
-                var employee1 = {
-                    summary: 'Roberto Carlos is on vacation',
-                    dtstart: new Date(2015, 0, 2, 8, 0, 0),
-                    dtend: new Date(2015, 0, 7, 22, 0, 0)
-                }
+                return Q.fcall(function () {
 
-                var employee2 = {
-                    summary: 'Bob Martinez is on vacation',
-                    dtstart: new Date(2015, 0, 5, 8, 0, 0),
-                    dtend: new Date(2015, 0, 19, 22, 0, 0)
-                }
+                    var events = [];
+                    var employee1 = {
+                        summary: 'Roberto Carlos is on vacation',
+                        dtstart: new Date(2015, 0, 2, 8, 0, 0),
+                        dtend: new Date(2015, 0, 7, 22, 0, 0)
+                    }
 
-                var employee3 = {
-                    summary: 'Billy Morisson is on vacation',
-                    dtstart: new Date(2015, 0, 29, 14, 0, 0),
-                    dtend: new Date(2015, 1, 15, 12, 0, 0)
-                }
+                    var employee2 = {
+                        summary: 'Bob Martinez is on vacation',
+                        dtstart: new Date(2015, 0, 5, 8, 0, 0),
+                        dtend: new Date(2015, 0, 19, 22, 0, 0)
+                    }
 
-                var employee4 = {
-                    summary: 'John Doe is on vacation',
-                    dtstart: new Date(2015, 1, 12, 9, 0, 0),
-                    dtend: new Date(2015, 1, 12, 12, 0, 0)
-                }
+                    var employee3 = {
+                        summary: 'Billy Morisson is on vacation',
+                        dtstart: new Date(2015, 0, 29, 14, 0, 0),
+                        dtend: new Date(2015, 1, 15, 12, 0, 0)
+                    }
 
-                var employee5 = {
-                    summary: 'Suzan Doe is on vacation',
-                    dtstart: new Date(2015, 1, 12, 9, 0, 0),
-                    dtend: new Date(2015, 1, 13, 19, 0, 0)
-                }
+                    var employee4 = {
+                        summary: 'John Doe is on vacation',
+                        dtstart: new Date(2015, 1, 12, 9, 0, 0),
+                        dtend: new Date(2015, 1, 12, 12, 0, 0)
+                    }
 
-                addEvent(interval, events, employee1);
-                addEvent(interval, events, employee2);
-                addEvent(interval, events, employee3);
-                addEvent(interval, events, employee4);
-                addEvent(interval, events, employee5);
+                    var employee5 = {
+                        summary: 'Suzan Doe is on vacation',
+                        dtstart: new Date(2015, 1, 12, 9, 0, 0),
+                        dtend: new Date(2015, 1, 13, 19, 0, 0)
+                    }
 
-                return events;
+                    addEvent(interval, events, employee1);
+                    addEvent(interval, events, employee2);
+                    addEvent(interval, events, employee3);
+                    addEvent(interval, events, employee4);
+                    addEvent(interval, events, employee5);
+
+                    return events;
+                });
             });
 
 
