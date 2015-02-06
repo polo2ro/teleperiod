@@ -32,14 +32,15 @@ Usage
 Add to page teleperiod.min.js and teleperiod.min.css
 
 create a svg placeholder in page:
-
+```html
     <div class="row">
         <svg id="teleperiod_placeholder"></svg>
     </div>
+```
 
 Initialize teleperiod object with options:
-
-    var teleperiod = new teleperiod({
+```javascript
+    var teleperiod = new Teleperiod({
         object: d3.select('#teleperiod_placeholder'),
         workingtimes: function(interval) {
         
@@ -51,26 +52,41 @@ Initialize teleperiod object with options:
         
         }
     });
+```    
+    
+Availables options:
+
+Property      | Description
+------------- | -------------
+object        | a D3 html element, it will be used as placeholder to load the graph. This option is mandatory
+workingtimes  | A function called to load the working times on the specified interval. The function must return a Q promise. This option is mandatory
+events        | A function called to load some events on the specified interval. The function must return a Q promise. This option is mandatory
+onUpdated     | A function called when the selection is modified, the selection is given as a parameter. This option is mandatory
+focusDate     | A Date object, the graph will be open at this date, if not set, the default value is the current date
+dateLocale    | A string to represent the locale used in dates functions, default is 'FR_fr'
+width         | An integer for the graph width, default is the size of parent container
     
 Add some bottom timeline references using the timeline object:
-
-    var timeline = new timeline('My timeline', function(interval) {
+```javascript
+    var timeline = new Timeline('My timeline', function(interval) {
     
     });
     
     teleperiod.addTimeLine(timeline);
+``` 
 
 Draw the widget:
-
+```javascript
     teleperiod.draw();
+``` 
 
 Set a selected period for modifications:
-
+```javascript
     teleperiod.setSelection(
         new Date(2015, 1, 10, 0, 0, 0),
         new Date(2015, 1, 11, 0, 0, 0)
     );
-
+``` 
 
 
 Usage exemples
