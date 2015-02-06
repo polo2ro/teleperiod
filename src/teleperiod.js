@@ -1,14 +1,11 @@
-'use strict';
-
-
 /**
  * Main teleperiod class
  *
  * @param   {Object}   settings [[Description]]
  *
  */
-function teleperiod(settings) {
-
+function Teleperiod(settings) {
+    'use strict';
 
     var telep = this;
 
@@ -38,90 +35,88 @@ function teleperiod(settings) {
 
     this.queued = [];
 
-    this.selection = new selection(this);
+    this.selection = new Selection(this);
 
 
     this.getWidth = function() {
         return this.settings.width || telep.viewport.node().parentNode.offsetWidth;
-    }
+    };
 
     this.getDateWidth = function() {
         return this.settings.dateWidth || 30;
-    }
+    };
 
     this.getDateHeight = function() {
         return 250;
-    }
+    };
 
     this.getHeight = function() {
-        return telep.getHeaderHeight()
-            + telep.getGraphHeight()
-            + telep.getTimelinesHeight();
-    }
+        return telep.getHeaderHeight() + telep.getGraphHeight() + telep.getTimelinesHeight();
+    };
 
     this.getTimelinesHeight = function() {
         return telep.timelines.length * (telep.getTimelineHeight() + telep.getTimelineMarginTop());
-    }
+    };
 
     this.getHeaderHeight = function() {
         return 50;
-    }
+    };
 
 
     this.getGraphHeight = function() {
         return 300;
-    }
+    };
 
     this.getTimelineHeight = function() {
         return 20;
-    }
+    };
 
     /**
      * Space between timelines
      */
     this.getTimelineMarginTop = function() {
         return this.settings.timelineMarginTop || 10;
-    }
+    };
 
 
     this.getButtonWidth = function() {
         return this.settings.buttonWidth || 30;
-    }
+    };
 
     this.getDayOff = function() {
         return this.settings.dayOff || [6,0];
-    }
+    };
 
     this.getMoveDays = function() {
         return 7;
-    }
+    };
 
     this.getDayFirstMinute = function() {
         return this.settings.dayFirstMinute || (7 * 60);
-    }
+    };
 
     this.getDayLastMinute = function() {
         return this.settings.dayLastMinute || (20 * 60);
-    }
+    };
 
     this.getSnapDistance = function() {
         return this.settings.snapDistance || 10;
-    }
+    };
 
     this.getDateLocale = function() {
         return this.settings.dateLocale || 'Fr-fr';
-    }
+    };
 
     this.getFocusDate = function() {
         return this.settings.focusDate || new Date();
-    }
+    };
 
 
     this.initFloatDates = function() {
         var focus = new Date(telep.getFocusDate());
         focus.setHours(0, 0, 0);
-        telep.floatFrom = new timespanBoundary(focus);
-        telep.floatTo = new timespanBoundary(focus);
+        telep.floatFrom = new TimespanBoundary(focus);
+        telep.floatTo = new TimespanBoundary(focus);
 
 
         telep.floatFrom.onUpdate(this.drawIntervalDates);
@@ -134,7 +129,7 @@ function teleperiod(settings) {
 
         telep.main.attr('width', viewPortDays * telep.getDateWidth());
         telep.floatTo.add(viewPortDays);
-    }
+    };
 
     /**
      * Set viewport size
@@ -168,7 +163,7 @@ function teleperiod(settings) {
             .attr('x2', telep.getDateWidth() -1).attr('y2', 3)
             .attr('stroke', "red")
             .attr('stroke-width', "2")
-            .attr('pointer-events', 'none');
+            .attr('pointer-events', 'none')
         ;
 
         var textX = telep.getDateWidth() + 23;
@@ -199,7 +194,7 @@ function teleperiod(settings) {
                 .text(telep.timelines[i].name)
             ;
         }
-    }
+    };
 
 
     /**
@@ -209,7 +204,7 @@ function teleperiod(settings) {
     {
         telep.setSize();
         telep.createMain();
-    }
+    };
 
 
 
@@ -234,7 +229,7 @@ function teleperiod(settings) {
             .attr('class', 'buttonarrow')
             .attr('points', '25,5 25,45 5,25')
         ;
-    }
+    };
 
 
     this.rightButton = function()
@@ -259,7 +254,7 @@ function teleperiod(settings) {
             .attr('class', 'buttonarrow')
             .attr('points', '5,5 25,25 5,45')
         ;
-    }
+    };
 
 
     this.drawIntervalDates = function(from, to)
@@ -274,11 +269,11 @@ function teleperiod(settings) {
             day_date.setHours(0,0,0);
 
             telep.dayGroupByDate[day_date] = day_group;
-        };
+        }
 
 
         telep.load(from, to);
-    }
+    };
 
     /**
      * Convert a date to a X postion
@@ -296,7 +291,7 @@ function teleperiod(settings) {
         var days = dd - fd;
 
         return days * telep.getDateWidth();
-    }
+    };
 
 
     /**
@@ -319,7 +314,7 @@ function teleperiod(settings) {
         var minFromStart = minutes - telep.getDayFirstMinute();
         var minTotal = telep.getDayLastMinute() - telep.getDayFirstMinute();
         return Math.round(minFromStart * telep.getDateHeight() / minTotal);
-    }
+    };
 
 
     /**
@@ -336,7 +331,7 @@ function teleperiod(settings) {
         date.setHours(0,0,0);
 
         return date;
-    }
+    };
 
 
     /**
@@ -351,7 +346,7 @@ function teleperiod(settings) {
 
         var minutes = telep.getDayFirstMinute() + Math.round(y / yPerMin);
         return minutes;
-    }
+    };
 
 
 
@@ -411,7 +406,7 @@ function teleperiod(settings) {
 
 
         return g;
-    }
+    };
 
 
     /**
@@ -446,7 +441,7 @@ function teleperiod(settings) {
             telep.timelines[i].load(from, to);
         }
 
-    }
+    };
 
 
     /**
@@ -467,7 +462,7 @@ function teleperiod(settings) {
                 indexDate = new Date(arr[i].dtstart);
                 indexDate.setHours(0, 0, 0);
 
-                if (telep.workingtimesEvents[indexDate] == undefined) {
+                if (telep.workingtimesEvents[indexDate] === undefined) {
                     telep.workingtimesEvents[indexDate] = [];
                 }
 
@@ -478,7 +473,7 @@ function teleperiod(settings) {
 
             telep.addWorkingtimes(workingtimes);
         });
-    }
+    };
 
 
     /**
@@ -495,7 +490,7 @@ function teleperiod(settings) {
                 indexDate = new Date(arr[i].dtstart);
                 indexDate.setHours(0, 0, 0);
 
-                if (telep.events[indexDate] == undefined) {
+                if (telep.events[indexDate] === undefined) {
                     telep.events[indexDate] = [];
                 }
 
@@ -505,7 +500,7 @@ function teleperiod(settings) {
 
             telep.addRegularEvents(events);
         });
-    }
+    };
 
 
     /**
@@ -519,12 +514,12 @@ function teleperiod(settings) {
         var day = new Date(d);
         day.setHours(0,0,0);
 
-        if (telep.dayGroupByDate[day] == undefined) {
+        if (telep.dayGroupByDate[day] === undefined) {
             return null;
         }
 
         return telep.dayGroupByDate[day];
-    }
+    };
 
 
 
@@ -556,14 +551,14 @@ function teleperiod(settings) {
                 }
             }
         });
-    }
+    };
 
 
     this.addRegularEvents = function(events)
     {
 
         telep.addEvents(events, 'event', {});
-    }
+    };
 
     /**
      * @param {Date} d
@@ -575,7 +570,7 @@ function teleperiod(settings) {
         r.setHours(0, telep.getDayFirstMinute(), 0);
 
         return r;
-    }
+    };
 
 
     /**
@@ -588,7 +583,7 @@ function teleperiod(settings) {
         r.setHours(0, telep.getDayLastMinute(), 0);
 
         return r;
-    }
+    };
 
 
 
@@ -602,7 +597,7 @@ function teleperiod(settings) {
         for (var i=0; i < events.length; i++) {
             telep.drawEvent(events[i], className, cb);
         }
-    }
+    };
 
 
     /**
@@ -660,7 +655,7 @@ function teleperiod(settings) {
 
             loop.setDate(loop.getDate() + 1);
         }
-    }
+    };
 
 
     /**
@@ -672,7 +667,6 @@ function teleperiod(settings) {
     this.getPointerDate = function(workingTimesItem)
     {
         var mouse = d3.mouse(workingTimesItem);
-        var x = mouse[0];
         var y = mouse[1];
 
         var g = d3.select(workingTimesItem.parentNode);
@@ -714,7 +708,7 @@ function teleperiod(settings) {
 
 
         return pointerDate;
-    }
+    };
 
 
 
@@ -748,7 +742,7 @@ function teleperiod(settings) {
             pointerDate.toLocaleTimeString(telep.getDateLocale(), {hour: "2-digit", minute: "2-digit" })
         );
 
-    }
+    };
 
 
 
@@ -763,7 +757,7 @@ function teleperiod(settings) {
         return telep.main.transition().attr('x', function() {
             return parseInt(this.getAttribute('x'), 10) + (nbDays * telep.getDateWidth());
         });
-    }
+    };
 
 
     /**
@@ -779,7 +773,7 @@ function teleperiod(settings) {
         }
 
         telep.processQueued();
-    }
+    };
 
     this.processQueued = function() {
 
@@ -801,7 +795,7 @@ function teleperiod(settings) {
                 telep.processQueued();
             }
         });
-    }
+    };
 
 
     /**
@@ -828,7 +822,7 @@ function teleperiod(settings) {
 
             return 'translate('+newX+','+m[2]+')';
         });
-    }
+    };
 
 
 
@@ -849,7 +843,7 @@ function teleperiod(settings) {
         }
 
         return telep.slideMain(telep.getMoveDays());
-    }
+    };
 
     /**
      * Click the right button
@@ -871,7 +865,7 @@ function teleperiod(settings) {
         }
 
         return telep.slideMain(-1 * telep.getMoveDays());
-    }
+    };
 
 
     /**
@@ -890,5 +884,5 @@ function teleperiod(settings) {
         if (telep.selection.isValid()) {
             telep.selection.highlightPeriods();
         }
-    }
+    };
 }

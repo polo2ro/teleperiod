@@ -1,13 +1,12 @@
-'use strict';
-
 /**
  * A timespan boundary
  * relative date from the initDate
  *
  * @param Date initDate
  */
-function timespanBoundary(initDate)
+function TimespanBoundary(initDate)
 {
+    'use strict';
 
     /**
      * @var Date
@@ -54,7 +53,7 @@ function timespanBoundary(initDate)
                 boundary.onUpdateCallback(newCopy, oldDate);
             }
         }
-    }
+    };
 
 
     /**
@@ -64,5 +63,5 @@ function timespanBoundary(initDate)
     this.onUpdate = function(callback)
     {
         boundary.onUpdateCallback = callback;
-    }
+    };
 }

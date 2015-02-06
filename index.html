@@ -65,7 +65,7 @@
         <script type="text/javascript">
 
 
-            var teleperiod = new teleperiod({
+            var teleperiod = new Teleperiod({
                 object: d3.select('#teleperiod_placeholder'),
 
                 focusDate: new Date(2014, 11, 25),
@@ -176,7 +176,7 @@
 
 
 
-            var vacations = new timeline('Scolar vacations', function(interval) {
+            var vacations = new Timeline('Scolar vacations', function(interval) {
 
                 return Q.fcall(function () {
                     var events = [];
@@ -196,7 +196,7 @@
 
 
 
-            var availability = new timeline('Department availability', function(interval) {
+            var availability = new Timeline('Department availability', function(interval) {
 
                 return Q.fcall(function () {
 

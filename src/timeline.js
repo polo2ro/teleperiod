@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Timeline reference object
  * Used to display informations under the teleperiod graph
@@ -7,8 +5,8 @@
  * @param {string}   name       Label for the timeline
  * @param {function} datasource object called when data is needed on the timeline
  */
-function timeline(name, datasource) {
-
+function Timeline(name, datasource) {
+    'use strict';
     this.name = name;
     this.datasource = datasource;
 
@@ -67,7 +65,7 @@ function timeline(name, datasource) {
 
                     dayIndexKey = tline.teleperiod.getDayBegin(loop);
 
-                    if (tline.dayIndex[dayIndexKey] != undefined) {
+                    if (tline.dayIndex[dayIndexKey] !== undefined) {
                         tline.addEventOnDay(tline.dayIndex[dayIndexKey], event);
                     }
 
@@ -78,7 +76,7 @@ function timeline(name, datasource) {
 
 
 
-    }
+    };
 
 
 
@@ -107,7 +105,7 @@ function timeline(name, datasource) {
 
 
         tline.dayIndex[tline.teleperiod.getDayBegin(d)] = day;
-    }
+    };
 
 
 
@@ -148,7 +146,7 @@ function timeline(name, datasource) {
 
 
         d.attr('style', 'fill:'+tline.getColor(events.length)+';');
-    }
+    };
 
 
     /**
@@ -159,7 +157,7 @@ function timeline(name, datasource) {
     this.setColor = function(nbEvents, color)
     {
         tline.color[nbEvents] = color;
-    }
+    };
 
 
     /**
@@ -172,7 +170,7 @@ function timeline(name, datasource) {
         }
 
         return 'rgba(32, 47, 72, 0.78)';
-    }
+    };
 
     /**
      * Get the color associated to number of events
@@ -205,6 +203,6 @@ function timeline(name, datasource) {
 
         prop.sort();
         return prop.pop();
-    }
+    };
 }
 

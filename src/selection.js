@@ -1,12 +1,12 @@
-'use strict';
-
 /**
  * Selection
  *
  *
  * @param {teleperiod}   teleperiod
  */
-function selection(teleperiod) {
+function Selection(teleperiod) {
+
+    'use strict';
 
     this.teleperiod = teleperiod;
 
@@ -33,8 +33,8 @@ function selection(teleperiod) {
             return false;
         }
 
-        return (selection.dtstart.getTime() < selection.dtend.getTime())
-    }
+        return (selection.dtstart.getTime() < selection.dtend.getTime());
+    };
 
 
     /**
@@ -71,7 +71,7 @@ function selection(teleperiod) {
 
         selection.resetOverlay();
         return false;
-    }
+    };
 
     /**
      * Get the list of <g> elements for the period
@@ -92,7 +92,7 @@ function selection(teleperiod) {
         }
 
         return g;
-    }
+    };
 
 
     /**
@@ -116,7 +116,7 @@ function selection(teleperiod) {
         cropped.dtend = p.dtend <= selection.dtend ? p.dtend : selection.dtend;
 
         return cropped;
-    }
+    };
 
 
     /**
@@ -132,12 +132,14 @@ function selection(teleperiod) {
 
         while(loop < selection.dtend) {
 
-            if (selection.teleperiod.workingtimesEvents[loop] != undefined) {
+            if (selection.teleperiod.workingtimesEvents[loop] !== undefined) {
                 var workingTimesOnDay = selection.teleperiod.workingtimesEvents[loop];
 
                 for(var i=0; i<workingTimesOnDay.length; i++) {
 
-                    if (cropped = selection.cropPeriod(workingTimesOnDay[i])) {
+                    cropped = selection.cropPeriod(workingTimesOnDay[i]);
+
+                    if (cropped) {
                         workingtimes.push(cropped);
                     }
                 }
@@ -147,7 +149,7 @@ function selection(teleperiod) {
         }
 
         return workingtimes;
-    }
+    };
 
     /**
      * Display the selection on one day
@@ -162,7 +164,7 @@ function selection(teleperiod) {
             selection.addOverlay(g, periods[i]);
         }
 
-    }
+    };
 
     /**
      *
@@ -200,7 +202,7 @@ function selection(teleperiod) {
         selection.overlayItems.push(rect);
 
         return rect;
-    }
+    };
 
 
     this.setOverlayClassed = function(classname, status)
@@ -208,7 +210,7 @@ function selection(teleperiod) {
         for (var i=0; i<selection.overlayItems.length; i++) {
             selection.overlayItems[i].classed(classname , status);
         }
-    }
+    };
 
 
     this.resetOverlay = function()
@@ -222,7 +224,7 @@ function selection(teleperiod) {
         if (selection.teleperiod.settings.onUpdated) {
             selection.teleperiod.settings.onUpdated(selection);
         }
-    }
+    };
 
 
     /**
@@ -247,6 +249,6 @@ function selection(teleperiod) {
         }
 
         return duration;
-    }
+    };
 
 }
