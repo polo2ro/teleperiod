@@ -112,14 +112,16 @@ function teleperiod(settings) {
         return this.settings.dateLocale || 'Fr-fr';
     }
 
+    this.getFocusDate = function() {
+        return this.settings.focusDate || new Date();
+    }
+
 
     this.initFloatDates = function() {
-        var today = new Date();
-        today.setHours(0, 0, 0);
-        telep.floatFrom = new timespanBoundary(today);
-        telep.floatTo = new timespanBoundary(today);
-
-
+        var focus = new Date(telep.getFocusDate());
+        focus.setHours(0, 0, 0);
+        telep.floatFrom = new timespanBoundary(focus);
+        telep.floatTo = new timespanBoundary(focus);
 
 
         telep.floatFrom.onUpdate(this.drawIntervalDates);

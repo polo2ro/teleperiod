@@ -67,6 +67,9 @@
 
             var teleperiod = new teleperiod({
                 object: d3.select('#teleperiod_placeholder'),
+
+                focusDate: new Date(2014, 11, 25),
+
                 workingtimes: function(interval) {
 
                     return Q.fcall(function () {
