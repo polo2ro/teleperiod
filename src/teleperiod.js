@@ -37,6 +37,7 @@ function Teleperiod(settings) {
 
     this.selection = new Selection(this);
 
+    this.lastMouseDown = null;
 
     this.getWidth = function() {
         return this.settings.width || telep.viewport.node().parentNode.offsetWidth;
@@ -194,7 +195,31 @@ function Teleperiod(settings) {
                 .text(telep.timelines[i].name)
             ;
         }
+
+
+        // Define drag beavior
+        var drag = d3.behavior.drag()
+            .on("drag", dragmove);
+
+        telep.main.on("mousedown", function(d) {
+            telep.lastMouseDown = d3.mouse(telep.viewport.node());
+        });
+
+        function dragmove(d) {
+            var startingPoint = telep.lastMouseDown[0];
+            var x = d3.mouse(telep.viewport.node())[0];
+
+
+            var relativeSlide = Math.round((x - startingPoint)/telep.getDateWidth());
+
+            telep.slideMain(relativeSlide);
+        }
+
+        telep.main.call(drag);
     };
+
+
+
 
 
     /**
