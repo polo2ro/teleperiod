@@ -203,16 +203,16 @@ function Teleperiod(settings) {
 
         telep.main.on("mousedown", function(d) {
             telep.lastMouseDown = d3.mouse(telep.viewport.node());
+            console.log('Update starting point '+telep.lastMouseDown[0]);
         });
 
-        function dragmove(d) {
+        function dragmove() {
             var startingPoint = telep.lastMouseDown[0];
             var x = d3.mouse(telep.viewport.node())[0];
 
-
-            var relativeSlide = Math.round((x - startingPoint)/telep.getDateWidth());
-
-            telep.slideMain(relativeSlide);
+            telep.main.attr('x', function() {
+                return x - startingPoint;
+            });
         }
 
         telep.main.call(drag);
