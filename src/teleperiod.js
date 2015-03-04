@@ -203,7 +203,6 @@ function Teleperiod(settings) {
 
         telep.main.on("mousedown", function(d) {
             telep.lastMouseDown = d3.mouse(telep.viewport.node());
-            console.log('Update starting point '+telep.lastMouseDown[0]);
         });
 
         function dragmove() {
@@ -850,12 +849,10 @@ function Teleperiod(settings) {
     };
 
 
-
     /**
-     * Click the left button
+     * grow main frame backward
      */
-    this.backward = function() {
-
+    this.backwardGrow = function() {
         telep.viewportFrom -= telep.getMoveDays();
         telep.viewportTo -= telep.getMoveDays();
 
@@ -866,15 +863,13 @@ function Teleperiod(settings) {
             var transition = telep.createSpaceOnLeft(-1 * enlarge);
             telep.floatFrom.add(enlarge);
         }
+    }
 
-        return telep.slideMain(telep.getMoveDays());
-    };
 
     /**
-     * Click the right button
+     * grow main frame forward
      */
-    this.forward = function() {
-
+    this.forwardGrow = function() {
         telep.viewportFrom += telep.getMoveDays();
         telep.viewportTo += telep.getMoveDays();
 
@@ -889,6 +884,25 @@ function Teleperiod(settings) {
             telep.floatTo.add(enlarge);
         }
 
+    }
+
+
+    /**
+     * Click the left button
+     */
+    this.backward = function() {
+
+        telep.backwardGrow();
+
+        return telep.slideMain(telep.getMoveDays());
+    };
+
+    /**
+     * Click the right button
+     */
+    this.forward = function() {
+
+        telep.forwardGrow();
         return telep.slideMain(-1 * telep.getMoveDays());
     };
 
