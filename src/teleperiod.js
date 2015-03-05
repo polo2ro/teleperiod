@@ -202,15 +202,41 @@ function Teleperiod(settings) {
             .on("drag", dragmove);
 
         telep.main.on("mousedown", function(d) {
-            telep.lastMouseDown = d3.mouse(telep.viewport.node());
+            // telep.origin = parseInt(telep.main.attr('x'), 10);
+            telep.lastMouseDown = d3.mouse(telep.viewport.node())[0];
+            telep.currentX = parseInt(telep.main.attr('x'), 10);
         });
 
         function dragmove() {
-            var startingPoint = telep.lastMouseDown[0];
             var x = d3.mouse(telep.viewport.node())[0];
 
+            // relative x from the mouse origin
+            var newX = x - telep.lastMouseDown;
+
+            // relative days from the mouse origin
+            var mouseDays = Math.ceil(newX/telep.getDateWidth());
+
+            // relative number of days from the viewport origin
+            var slideDays = telep.viewportFrom - mouseDays;
+
+            // additional width added when backwardGrow() or forwardGrow()
+            var additionalWidth = (telep.getMoveDays() * telep.getDateWidth());
+
+            var additionalDays = Math.abs(telep.viewportFrom - telep.currentX);
+
+
             telep.main.attr('x', function() {
-                return x - startingPoint;
+
+                if ((slideDays +additionalDays) < 0) {
+
+                    // before viewportFrom with at least one day
+
+                    telep.backwardGrow();
+
+                    console.log('slideDays '+slideDays+' add '+additionalWidth+' additionalDays '+additionalDays);
+                }
+
+                return (telep.currentX + newX);
             });
         }
 
