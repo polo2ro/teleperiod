@@ -207,6 +207,10 @@ function Teleperiod(settings) {
             telep.currentX = parseInt(telep.main.attr('x'), 10);
         });
 
+
+        // additional width added when backwardGrow() or forwardGrow()
+        var additionalWidth = (telep.getMoveDays() * telep.getDateWidth());
+
         function dragmove() {
             var x = d3.mouse(telep.viewport.node())[0];
 
@@ -219,21 +223,15 @@ function Teleperiod(settings) {
             // relative number of days from the viewport origin
             var slideDays = telep.viewportFrom - mouseDays;
 
-            // additional width added when backwardGrow() or forwardGrow()
-            var additionalWidth = (telep.getMoveDays() * telep.getDateWidth());
-
-            var additionalDays = Math.abs(telep.viewportFrom - telep.currentX);
+            // numbers of days between main x and viewport x
+            var gapDays = Math.ceil((-1 * (newX + telep.currentX))/telep.getMoveDays());
 
 
             telep.main.attr('x', function() {
-
-                if ((slideDays +additionalDays) < 0) {
-
+                if (gapDays < 0) {
                     // before viewportFrom with at least one day
-
                     telep.backwardGrow();
-
-                    console.log('slideDays '+slideDays+' add '+additionalWidth+' additionalDays '+additionalDays);
+                    telep.currentX -= additionalWidth;
                 }
 
                 return (telep.currentX + newX);
