@@ -39,10 +39,36 @@ function Teleperiod(settings) {
 
     this.lastMouseDown = null;
 
+    /**
+     * Number of days
+     * viewportFrom start at zero, decrease if main frame grow to the left
+     * and go positive if mainframe grow to the right
+     * viewportTo - viewportFrom = width in days
+     *
+     * @var {Int}
+     */
+    this.viewportFrom;
+
+    /**
+     * Number of days
+     * viewportTo start at 40 (the with in days), decrease if main frame grow to the left
+     * and increase if main frame grow to the right.
+     * viewportTo - viewportFrom = width in days
+     *
+     * @var {Int}
+     */
+    this.viewportTo;
+
+    /**
+     * @return {Int}
+     */
     this.getWidth = function() {
         return this.settings.width || telep.viewport.node().parentNode.offsetWidth;
     };
 
+    /**
+     * @return {Int}
+     */
     this.getDateWidth = function() {
         return this.settings.dateWidth || 30;
     };
@@ -201,11 +227,20 @@ function Teleperiod(settings) {
         var drag = d3.behavior.drag()
             .on("drag", dragmove);
 
+        var x,
+            newX,
+            slideDays,
+            currentX,
+            currentWidth,
+            gapDaysBackward,
+            hiddenPart,
+            gapDaysForward;
+
         telep.main.on("mousedown", function(d) {
-            // telep.origin = parseInt(telep.main.attr('x'), 10);
+
             telep.lastMouseDown = d3.mouse(telep.viewport.node())[0];
-            telep.currentX = parseInt(telep.main.attr('x'), 10);
-            telep.currentWidth = parseInt(telep.main.attr("width"), 10);
+            currentX = parseInt(telep.main.attr('x'), 10);
+            currentWidth = parseInt(telep.main.attr("width"), 10);
         });
 
 
@@ -214,42 +249,41 @@ function Teleperiod(settings) {
 
 
         function dragmove() {
-            var x = d3.mouse(telep.viewport.node())[0];
+            x = d3.mouse(telep.viewport.node())[0];
 
             // relative x from the mouse origin
-            var newX = x - telep.lastMouseDown;
-
-            // relative days from the mouse origin
-            var mouseDays = Math.ceil(newX/telep.getDateWidth());
+            newX = x - telep.lastMouseDown;
 
             // relative number of days from the viewport origin
-            var slideDays = telep.viewportFrom - mouseDays;
-
+            slideDays = telep.viewportFrom - Math.ceil(newX/telep.getDateWidth());
 
             // numbers of days between main x and viewport x
-            var gapDaysBackward = Math.ceil((-1 * (newX + telep.currentX))/telep.getMoveDays());
+            gapDaysBackward = Math.ceil((-1 * (newX + currentX))/telep.getMoveDays());
 
 
-            var hiddenPart = Math.abs(newX + telep.currentX);
+            hiddenPart =  (-1*newX + currentX);
 
             // number of days between main end and viewport end
-            var gapDaysForward = Math.ceil((telep.currentWidth - hiddenPart - telep.getWidth())/telep.getDateWidth()) -1;
+            gapDaysForward = Math.ceil((currentWidth - hiddenPart - telep.getWidth())/telep.getDateWidth()) -1;
 
             telep.main.attr('x', function() {
                 if (gapDaysBackward < 0) {
                     // before viewportFrom with at least one day
                     telep.backwardGrow();
-                    telep.currentX -= additionalWidth;
+                    currentX -= additionalWidth;
                     console.log('backwardGrow '+gapDaysBackward);
                 }
 
+                console.log('gapDaysForward '+gapDaysForward+' hidden '+hiddenPart+' from '+telep.viewportFrom+' to '+telep.viewportTo);
+
+
                 if (gapDaysForward < 0) {
                     telep.forwardGrow();
-                    telep.currentWidth += additionalWidth;
+                    currentWidth += additionalWidth;
                     console.log('forwardGrow '+gapDaysForward);
                 }
 
-                return (telep.currentX + newX);
+                return (currentX + newX);
             });
         }
 
