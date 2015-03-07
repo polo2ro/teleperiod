@@ -238,7 +238,8 @@ function Teleperiod(settings) {
             currentWidth,
             gapDaysBackward,
             hiddenPart,
-            gapDaysForward;
+            gapDaysForward,
+            backwardTotal = 0;
 
         telep.main.on("mousedown", function(d) {
 
@@ -265,24 +266,25 @@ function Teleperiod(settings) {
             gapDaysBackward = Math.ceil((-1 * (newX + currentX))/telep.getMoveDays());
 
 
-            hiddenPart = (-1*newX + Math.abs(currentX));
+            hiddenPart = (-1*newX + Math.abs(currentX) + backwardTotal);
 
             // number of days between main end and viewport end
             gapDaysForward = Math.ceil((currentWidth - hiddenPart - telep.getWidth())/telep.getDateWidth()) -1;
 
             telep.main.attr('x', function() {
+
                 if (gapDaysBackward < 0) {
                     // before viewportFrom with at least one day
                     telep.backwardGrow();
                     currentX -= additionalWidth;
-                    //console.log('backwardGrow '+gapDaysBackward);
+                    backwardTotal -= additionalWidth;
+                    console.log('backwardGrow '+gapDaysBackward);
                 }
-
 
                 if (gapDaysForward < 0) {
                     telep.forwardGrow();
                     currentWidth += additionalWidth;
-                    //console.log('forwardGrow '+gapDaysForward);
+                    console.log('forwardGrow '+gapDaysForward);
                 }
 
                 return (currentX + newX);
