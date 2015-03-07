@@ -39,28 +39,28 @@ function Selection(teleperiod) {
 
     /**
      * set new date
-     * if the pointer_date is the first date, define the dtstart,
-     * if dtstart allready set and pointer_date is after, define the dtend
-     * if pointer_date is before dtstart, overwrite dtstart
+     * if the pointerDate is the first date, define the dtstart,
+     * if dtstart allready set and pointerDate is after, define the dtend
+     * if pointerDate is before dtstart, overwrite dtstart
      *
      * return true if a period is set
      *
-     * @param {Date} pointer_date
+     * @param {Date} pointerDate
      *
      * @return {boolean}
      */
-    this.setDate = function(pointer_date)
+    this.setDate = function(pointerDate)
     {
-        if (null === selection.dtstart || selection.dtstart.getTime() > pointer_date.getTime() || selection.isValid()) {
-            selection.dtstart = pointer_date;
+        if (null === selection.dtstart || selection.dtstart.getTime() > pointerDate.getTime() || selection.isValid()) {
+            selection.dtstart = pointerDate;
             selection.dtend = null;
             selection.resetOverlay();
             return false;
         }
 
 
-        if (selection.dtstart.getTime() < pointer_date.getTime()) {
-            selection.dtend = pointer_date;
+        if (selection.dtstart.getTime() < pointerDate.getTime()) {
+            selection.dtend = pointerDate;
 
             if (selection.teleperiod.settings.onUpdated) {
                 selection.teleperiod.settings.onUpdated(selection);

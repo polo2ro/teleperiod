@@ -47,7 +47,7 @@ function Teleperiod(settings) {
      *
      * @var {Int}
      */
-    this.viewportFrom;
+    this.viewportFrom = null;
 
     /**
      * Number of days
@@ -57,7 +57,7 @@ function Teleperiod(settings) {
      *
      * @var {Int}
      */
-    this.viewportTo;
+    this.viewportTo = null;
 
     /**
      * @return {Int}
@@ -223,10 +223,14 @@ function Teleperiod(settings) {
         }
 
 
-        // Define drag beavior
-        var drag = d3.behavior.drag()
-            .on("drag", dragmove);
+        telep.setupDragBeavior();
 
+    };
+
+
+
+    this.setupDragBeavior = function()
+    {
         var x,
             newX,
             slideDays,
@@ -287,10 +291,9 @@ function Teleperiod(settings) {
             });
         }
 
-        telep.main.call(drag);
+        // Define drag beavior
+        telep.main.call(d3.behavior.drag().on("drag", dragmove));
     };
-
-
 
 
 
@@ -359,13 +362,13 @@ function Teleperiod(settings) {
         var loopDate = new Date(from);
 
         while (loopDate < to) {
-            var day_date = new Date(loopDate);
-            var day_group = telep.drawDate(loopDate);
+            var dayDate = new Date(loopDate);
+            var dayGroup = telep.drawDate(loopDate);
             loopDate.setDate(loopDate.getDate()+1);
 
-            day_date.setHours(0,0,0);
+            dayDate.setHours(0,0,0);
 
-            telep.dayGroupByDate[day_date] = day_group;
+            telep.dayGroupByDate[dayDate] = dayGroup;
         }
 
 
@@ -936,7 +939,7 @@ function Teleperiod(settings) {
             var transition = telep.createSpaceOnLeft(-1 * enlarge);
             telep.floatFrom.add(enlarge);
         }
-    }
+    };
 
 
     /**
@@ -957,7 +960,7 @@ function Teleperiod(settings) {
             telep.floatTo.add(enlarge);
         }
 
-    }
+    };
 
 
     /**

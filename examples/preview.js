@@ -1,5 +1,6 @@
 function loadPreview()
 {
+    'use strict';
 
     var teleperiod = new Teleperiod({
         object: d3.select('#teleperiod_placeholder'),
@@ -15,7 +16,7 @@ function loadPreview()
                 var loop = new Date(interval.from);
                 while (loop.getTime() < interval.to.getTime()) {
 
-                    if (loop.getDay() != 0 && loop.getDay() != 6) {
+                    if (loop.getDay() !== 0 && loop.getDay() !== 6) {
 
                         var am = {};
                         var pm = {};
@@ -120,7 +121,7 @@ function loadPreview()
                 summary: 'Christmas vacations',
                 dtstart: new Date(2014, 11, 20, 8, 0, 0),
                 dtend: new Date(2015, 0, 5, 19, 0, 0)
-            }
+            };
 
             addEvent(interval, events, christmas);
 
@@ -141,31 +142,31 @@ function loadPreview()
                 summary: 'Roberto Carlos is on vacation',
                 dtstart: new Date(2015, 0, 2, 8, 0, 0),
                 dtend: new Date(2015, 0, 7, 22, 0, 0)
-            }
+            };
 
             var employee2 = {
                 summary: 'Bob Martinez is on vacation',
                 dtstart: new Date(2015, 0, 5, 8, 0, 0),
                 dtend: new Date(2015, 0, 19, 22, 0, 0)
-            }
+            };
 
             var employee3 = {
                 summary: 'Billy Morisson is on vacation',
                 dtstart: new Date(2015, 0, 29, 14, 0, 0),
                 dtend: new Date(2015, 1, 15, 12, 0, 0)
-            }
+            };
 
             var employee4 = {
                 summary: 'John Doe is on vacation',
                 dtstart: new Date(2015, 1, 12, 9, 0, 0),
                 dtend: new Date(2015, 1, 12, 12, 0, 0)
-            }
+            };
 
             var employee5 = {
                 summary: 'Suzan Doe is on vacation',
                 dtstart: new Date(2015, 1, 12, 9, 0, 0),
                 dtend: new Date(2015, 1, 13, 19, 0, 0)
-            }
+            };
 
             addEvent(interval, events, employee1);
             addEvent(interval, events, employee2);
