@@ -233,7 +233,6 @@ function Teleperiod(settings) {
     {
         var x,
             newX,
-            slideDays,
             currentX,
             currentWidth,
             gapDaysBackward,
@@ -259,11 +258,9 @@ function Teleperiod(settings) {
             // relative x from the mouse origin
             newX = x - telep.lastMouseDown;
 
-            // relative number of days from the viewport origin
-            slideDays = telep.viewportFrom - Math.ceil(newX/telep.getDateWidth());
-
             // numbers of days between main x and viewport x
             gapDaysBackward = Math.ceil((-1 * (newX + currentX))/telep.getMoveDays());
+
 
 
             hiddenPart = (-1*newX + Math.abs(currentX) + backwardTotal);
@@ -280,6 +277,8 @@ function Teleperiod(settings) {
                     backwardTotal -= additionalWidth;
                     console.log('backwardGrow '+gapDaysBackward);
                 }
+
+                console.log('gapDaysForward '+gapDaysForward+' '+Math.ceil(backwardTotal/telep.getMoveDays()));
 
                 if (gapDaysForward < 0) {
                     telep.forwardGrow();
@@ -927,6 +926,7 @@ function Teleperiod(settings) {
 
     /**
      * grow main frame backward
+     * @return {bool}
      */
     this.backwardGrow = function() {
         telep.viewportFrom -= telep.getMoveDays();
@@ -938,12 +938,17 @@ function Teleperiod(settings) {
             var enlarge = telep.viewportFrom - telep.floatFrom.dayPosition;
             var transition = telep.createSpaceOnLeft(-1 * enlarge);
             telep.floatFrom.add(enlarge);
+
+            return true;
         }
+
+        return false;
     };
 
 
     /**
      * grow main frame forward
+     * @return {bool}
      */
     this.forwardGrow = function() {
         telep.viewportFrom += telep.getMoveDays();
@@ -958,7 +963,11 @@ function Teleperiod(settings) {
             telep.main.attr("width", width + enlargePx);
 
             telep.floatTo.add(enlarge);
+
+            return true;
         }
+
+        return false;
 
     };
 
