@@ -60,6 +60,18 @@ function Teleperiod(settings) {
     this.viewportTo = null;
 
     /**
+     * Inferior limit of the loaded timespan
+     * @var {TimespanBoundary}
+     */
+    this.floatFrom = null;
+
+    /**
+     * Supperior limit of the loaded timespan
+     * @var {TimespanBoundary}
+     */
+    this.floatTo = null;
+
+    /**
      * @return {Int}
      */
     this.getWidth = function() {
@@ -73,72 +85,116 @@ function Teleperiod(settings) {
         return this.settings.dateWidth || 30;
     };
 
+    /**
+     * @return {Int}
+     */
     this.getDateHeight = function() {
         return 250;
     };
 
+    /**
+     * @return {Int}
+     */
     this.getHeight = function() {
         return telep.getHeaderHeight() + telep.getGraphHeight() + telep.getTimelinesHeight();
     };
 
+    /**
+     * @return {Int}
+     */
     this.getTimelinesHeight = function() {
         return telep.timelines.length * (telep.getTimelineHeight() + telep.getTimelineMarginTop());
     };
 
+    /**
+     * @return {Int}
+     */
     this.getHeaderHeight = function() {
         return 50;
     };
 
 
+    /**
+     * @return {Int}
+     */
     this.getGraphHeight = function() {
         return 300;
     };
 
+    /**
+     * @return {Int}
+     */
     this.getTimelineHeight = function() {
         return 20;
     };
 
     /**
      * Space between timelines
+     * @return {Int}
      */
     this.getTimelineMarginTop = function() {
         return this.settings.timelineMarginTop || 10;
     };
 
-
+    /**
+     * @return {Int}
+     */
     this.getButtonWidth = function() {
         return this.settings.buttonWidth || 30;
     };
 
+    /**
+     * @return {Array}
+     */
     this.getDayOff = function() {
         return this.settings.dayOff || [6,0];
     };
 
+    /**
+     * @return {Int}
+     */
     this.getMoveDays = function() {
         return 7;
     };
 
+    /**
+     * @return {Int}
+     */
     this.getDayFirstMinute = function() {
         return this.settings.dayFirstMinute || (7 * 60);
     };
 
+    /**
+     * @return {Int}
+     */
     this.getDayLastMinute = function() {
         return this.settings.dayLastMinute || (20 * 60);
     };
 
+    /**
+     * @return {Int}
+     */
     this.getSnapDistance = function() {
         return this.settings.snapDistance || 10;
     };
 
+    /**
+     * @return {String}
+     */
     this.getDateLocale = function() {
         return this.settings.dateLocale || 'Fr-fr';
     };
 
+    /**
+     * @return {Date}
+     */
     this.getFocusDate = function() {
         return this.settings.focusDate || new Date();
     };
 
-
+    /**
+     * Init the laded timespan boundaries from the focus date
+     */
     this.initFloatDates = function() {
         var focus = new Date(telep.getFocusDate());
         focus.setHours(0, 0, 0);
@@ -228,7 +284,9 @@ function Teleperiod(settings) {
     };
 
 
-
+    /**
+     * Setup the horizontal drag beaviour
+     */
     this.setupDragBeavior = function()
     {
         var x,
@@ -307,6 +365,9 @@ function Teleperiod(settings) {
 
 
 
+    /**
+     * Append left button to the viewport frame
+     */
     this.leftButton = function()
     {
         var group = telep.viewport.append('svg')
@@ -330,7 +391,9 @@ function Teleperiod(settings) {
         ;
     };
 
-
+    /**
+     * Append right button to the viewport frame
+     */
     this.rightButton = function()
     {
         var group = telep.viewport.append('svg')
