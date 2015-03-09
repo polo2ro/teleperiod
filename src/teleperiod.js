@@ -289,67 +289,22 @@ function Teleperiod(settings) {
      */
     this.setupDragBeavior = function()
     {
-        var x,
-            newX,
-            currentX,
-            currentWidth,
-            gapDaysBackward,
-            hiddenPart,
-            gapDaysForward,
-            backwardTotal = 0;
+
+
+        var mouseDrag = null;
 
         telep.main.on("mousedown", function(d) {
-
-            telep.lastMouseDown = d3.mouse(telep.viewport.node())[0];
-            currentX = parseInt(telep.main.attr('x'), 10);
-            currentWidth = parseInt(telep.main.attr("width"), 10);
+            mouseDrag = new MouseDrag(telep);
         });
 
 
-        // additional width added when backwardGrow() or forwardGrow()
-        var additionalWidth = (telep.getMoveDays() * telep.getDateWidth());
-
-
-        function dragmove() {
-            x = d3.mouse(telep.viewport.node())[0];
-
-            // relative x from the mouse origin
-            newX = x - telep.lastMouseDown;
-
-            // numbers of days between main x and viewport x
-            gapDaysBackward = Math.ceil((-1 * (newX + currentX))/telep.getMoveDays());
-
-
-
-            hiddenPart = (-1*newX + Math.abs(currentX) + backwardTotal);
-
-            // number of days between main end and viewport end
-            gapDaysForward = Math.ceil((currentWidth - hiddenPart - telep.getWidth())/telep.getDateWidth()) -1;
-
-            telep.main.attr('x', function() {
-
-                if (gapDaysBackward < 0) {
-                    // before viewportFrom with at least one day
-                    telep.backwardGrow();
-                    currentX -= additionalWidth;
-                    backwardTotal -= additionalWidth;
-                    console.log('backwardGrow '+gapDaysBackward);
-                }
-
-                console.log('gapDaysForward '+gapDaysForward+' '+Math.ceil(backwardTotal/telep.getMoveDays()));
-
-                if (gapDaysForward < 0) {
-                    telep.forwardGrow();
-                    currentWidth += additionalWidth;
-                    console.log('forwardGrow '+gapDaysForward);
-                }
-
-                return (currentX + newX);
-            });
-        }
 
         // Define drag beavior
-        telep.main.call(d3.behavior.drag().on("drag", dragmove));
+        telep.main.call(d3.behavior.drag().on("drag", function() {
+            if (mouseDrag) {
+                mouseDrag.dragmove();
+            }
+        }));
     };
 
 
