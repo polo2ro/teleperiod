@@ -79,5 +79,14 @@
   "white"         : true,    // true: Check against strict whitespace and indentation rules
 
   // Custom Globals
-  "predef"        : ["module", "d3", "Q", "Teleperiod", "Selection", "TimespanBoundary", "Timeline"] // additional predefined global variables
+  "predef"        : [
+      "module",
+      "d3",
+      "Q",
+      "Teleperiod",
+      "Selection",
+      "TimespanBoundary",
+      "Timeline",
+      "MouseDrag"
+  ] // additional predefined global variables
 }
