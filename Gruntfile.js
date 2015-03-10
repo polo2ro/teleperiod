@@ -15,7 +15,8 @@ module.exports = function (grunt) {
                     'src/selection.js',
                     'src/teleperiod.js',
                     'src/timeline.js',
-                    'src/timespan-boundary.js'
+                    'src/timespan-boundary.js',
+                    'src/mousedrag.js'
                     ]
                 }
             }

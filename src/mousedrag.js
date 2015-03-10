@@ -27,7 +27,7 @@ function MouseDrag(teleperiod) {
 
     var mouseDrag = this;
 
-    var x, newX;
+    var x, newX, movementWidth;
 
 
     /**
@@ -37,15 +37,7 @@ function MouseDrag(teleperiod) {
      */
     this.getLeftDistance = function() {
 
-        var main = teleperiod.main.attr('x');
-
-        if (null === main) {
-            main = 0;
-        } else {
-            main = parseInt(main, 10);
-        }
-
-        return (viewportX - main);
+        return (viewportX - newX);
     };
 
 
@@ -57,31 +49,21 @@ function MouseDrag(teleperiod) {
     this.getRightDistance = function() {
 
         var viewport = viewportX + viewportWidth;
-
-        var main = teleperiod.main.attr('x');
-        if (null === main) {
-            main = 0;
-        } else {
-            main = parseInt(main, 10);
-        }
-
-
         var realCurrentWidth = parseInt(teleperiod.main.attr('width'), 10);
 
-        main += realCurrentWidth;
-
-        console.log('viewport '+viewport+' x '+teleperiod.main.attr('x')+' realCurrentWidth '+realCurrentWidth);
-
-        return (main - viewport);
+        return (newX + realCurrentWidth - viewport);
     };
 
 
-
+    /**
+     * Event callback for drag behaviour
+     */
     this.dragmove = function dragMove() {
         x = d3.mouse(teleperiod.viewport.node())[0];
 
         // relative x from the mouse origin
-        newX = x - xStart;
+        movementWidth = x - xStart;
+        newX = currentX + movementWidth;
 
         if (mouseDrag.getLeftDistance() < 0) {
             // before viewportFrom with at least one day
@@ -96,11 +78,11 @@ function MouseDrag(teleperiod) {
             if (teleperiod.forwardGrow()) {
                 currentWidth += additionalWidth;
                 console.log('+++');
-                teleperiod.forwardGrow();
+                // teleperiod.forwardGrow();
             }
         }
 
 
-        teleperiod.main.attr('x', (currentX + newX));
+        teleperiod.main.attr('x', (currentX + movementWidth));
     };
 }
