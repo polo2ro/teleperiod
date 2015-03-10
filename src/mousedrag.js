@@ -69,7 +69,6 @@ function MouseDrag(teleperiod) {
             // before viewportFrom with at least one day
             if (teleperiod.backwardGrow()) {
                 currentX -= additionalWidth;
-                console.log('---');
             }
         }
 
@@ -77,8 +76,6 @@ function MouseDrag(teleperiod) {
         if (mouseDrag.getRightDistance() < 0) {
             if (teleperiod.forwardGrow()) {
                 currentWidth += additionalWidth;
-                console.log('+++');
-                // teleperiod.forwardGrow();
             }
         }
 
