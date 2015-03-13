@@ -314,6 +314,7 @@ function Teleperiod(settings) {
      */
     this.draw = function()
     {
+        telep.viewport.classed('teleperiod', true);
         telep.setSize();
         telep.createMain();
     };
