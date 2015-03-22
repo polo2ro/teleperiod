@@ -664,9 +664,6 @@ function Teleperiod(settings) {
             mousemove: telep.updateWtTooltip,
             click: function() {
                 telep.selection.setDate(telep.getPointerDate(this));
-                if (telep.selection.isValid()) {
-                    telep.selection.highlightPeriods();
-                }
             }
         });
     };

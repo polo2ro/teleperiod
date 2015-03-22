@@ -62,6 +62,10 @@ function Selection(teleperiod) {
         if (selection.dtstart.getTime() < pointerDate.getTime()) {
             selection.dtend = pointerDate;
 
+            if (selection.isValid()) {
+                selection.highlightPeriods();
+            }
+
             if (selection.teleperiod.settings.onUpdated) {
                 selection.teleperiod.settings.onUpdated(selection);
             }
@@ -204,7 +208,26 @@ function Selection(teleperiod) {
         return rect;
     };
 
+    /**
+     * Remove all overlay of the selection
+     *
+     */
+    this.removeOverlay = function()
+    {
+        for (var i=0; i<selection.overlayItems.length; i++) {
+            selection.overlayItems[i].remove();
+        }
 
+        selection.overlayItems = [];
+
+    };
+
+
+    /**
+     * Apply or remove a classname on all averlay items
+     * @param string classname
+     * @param bool   status
+     */
     this.setOverlayClassed = function(classname, status)
     {
         for (var i=0; i<selection.overlayItems.length; i++) {
@@ -213,13 +236,13 @@ function Selection(teleperiod) {
     };
 
 
+    /**
+     * Remove existing overlay
+     * and fire the callback
+     */
     this.resetOverlay = function()
     {
-        for (var i=0; i<selection.overlayItems.length; i++) {
-            selection.overlayItems[i].remove();
-        }
-
-        selection.overlayItems = [];
+        selection.removeOverlay();
 
         if (selection.teleperiod.settings.onUpdated) {
             selection.teleperiod.settings.onUpdated(selection);
