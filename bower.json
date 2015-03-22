@@ -1,6 +1,5 @@
 {
   "name": "teleperiod",
-  "version": "0.0.3",
   "main": "src/teleperiod.js",
   "ignore": [
     ".gitignore",
