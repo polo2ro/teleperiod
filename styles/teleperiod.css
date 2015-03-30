@@ -27,6 +27,11 @@
     cursor:pointer;
 }
 
+/* Do not display event summary on working times */
+.teleperiod .day .workingtime-summary {
+    display:none;
+}
+
 .teleperiod .day .timelineday {
 
 }

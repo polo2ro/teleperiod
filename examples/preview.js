@@ -21,12 +21,14 @@ function loadPreview()
                         var am = {};
                         var pm = {};
 
+                        am.summary = 'work schedule';
                         am.dtstart = new Date(loop);
                         am.dtstart.setHours(9, 0, 0);
 
                         am.dtend = new Date(loop);
                         am.dtend.setHours(12, 0, 0);
 
+                        pm.summary = 'work schedule';
                         pm.dtstart = new Date(loop);
                         pm.dtstart.setHours(13, 0, 0);
 

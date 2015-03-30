@@ -760,7 +760,7 @@ function Teleperiod(settings) {
 
             if (event.summary) {
                 dayGroup.append('text')
-                    .attr('class', 'summary')
+                    .attr('class', className+'-summary')
                     .attr('x', yStart + 5)
                     .attr('y', -10)
                     .attr('transform', "rotate(90)")
