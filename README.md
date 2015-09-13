@@ -18,6 +18,9 @@ Installation as a [bower](http://bower.io/) componenent:
     bower install teleperiod
 
 
+An angular version is available: [angular-teleperiod](https://github.com/polo2ro/angular-teleperiod)
+
+
 Features
 --------
 
