@@ -196,4 +196,14 @@ function loadPreview()
 
     teleperiod.setSelection(new Date(2015, 1, 10, 0, 0, 0), new Date(2015, 1, 11, 0, 0, 0));
 
+
+    document.getElementById('testMoveTo').addEventListener("click", function( event ) {
+
+        function randomDate(start, end) {
+            return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+        }
+
+        var randDate = randomDate(new Date(2000, 0, 1), new Date(2030, 0, 1));
+        teleperiod.moveTo(randDate);
+    });
 }

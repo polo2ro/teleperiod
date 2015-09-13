@@ -193,6 +193,19 @@ function Teleperiod(settings) {
     };
 
     /**
+     * move graph to date
+     * @param {Date} date
+     */
+    this.moveTo = function(date) {
+
+        date.setHours(0, 0, 0);
+        telep.floatFrom = new TimespanBoundary(date);
+        telep.floatTo = new TimespanBoundary(date);
+
+        console.log(date);
+    };
+
+    /**
      * Init the laded timespan boundaries from the focus date
      */
     this.initFloatDates = function() {
