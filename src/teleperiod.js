@@ -72,6 +72,22 @@ function Teleperiod(settings) {
     this.floatTo = null;
 
     /**
+     *
+     */
+    this.leftButtonGroup = null;
+
+    /**
+     *
+     */
+    this.rightButtonGroup = null;
+
+    /**
+     *
+     */
+    this.timeLineNamesGroup = null;
+
+
+    /**
      * @return {Int}
      */
     this.getWidth = function() {
@@ -198,11 +214,11 @@ function Teleperiod(settings) {
      */
     this.moveTo = function(date) {
 
-        date.setHours(0, 0, 0);
-        telep.floatFrom = new TimespanBoundary(date);
-        telep.floatTo = new TimespanBoundary(date);
+        this.main.remove();
+        telep.wtTooltip.remove();
 
-        console.log(date);
+        this.settings.focusDate = date;
+        this.createSlidingItems();
     };
 
     /**
@@ -236,12 +252,31 @@ function Teleperiod(settings) {
             .attr("height", telep.getHeight());
     };
 
+
+    this.createSlidingItems = function()
+    {
+        telep.main = telep.viewport.append('svg');
+
+        telep.main
+            .attr('class', 'main')
+            .attr('x', 0)
+            .attr("width", 0)
+            .attr('height', telep.getHeaderHeight() + telep.getGraphHeight() + telep.getTimelinesHeight());
+
+        telep.initFloatDates();
+
+        // recreate buttons to be on top of text
+        telep.leftButton();
+        telep.rightButton();
+        telep.timeLineNames();
+    };
+
     /**
      * Create main frame with the grid
      */
     this.createMain = function()
     {
-        telep.main = telep.viewport.append('svg');
+
         telep.wtTooltip = telep.viewport.append('svg')
             .attr('width', telep.getDateWidth() + 100)
             .attr('height', 50)
@@ -267,33 +302,36 @@ function Teleperiod(settings) {
         telep.wtTooltip.append('text').attr('y', 20).attr('x', textX).attr('class', 'wtTooltipDate');
         telep.wtTooltip.append('text').attr('y', 40).attr('x', textX).attr('class', 'wtTooltipHour');
 
-        telep.leftButton();
-        telep.rightButton();
+        this.createSlidingItems();
 
 
 
-        telep.main
-            .attr('class', 'main')
-            .attr('x', 0)
-            .attr("width", 0)
-            .attr('height', telep.getHeaderHeight() + telep.getGraphHeight() + telep.getTimelinesHeight());
 
 
-        telep.initFloatDates();
 
+
+
+        telep.setupDragBeavior();
+
+    };
+
+
+    this.timeLineNames = function()
+    {
+        if (null !== this.timeLineNamesGroup) {
+            this.timeLineNamesGroup.remove();
+        }
+
+        this.timeLineNamesGroup = telep.viewport.append('svg');
 
         for(var i=0; i<telep.timelines.length; i++) {
-            telep.viewport.append('text')
+            this.timeLineNamesGroup.append('text')
                 .attr('class', 'timeline-name')
                 .attr('x', 20)
                 .attr('y', telep.getGraphHeight() + 5 + telep.getTimelineHeight() + i *(telep.getTimelineMarginTop() + telep.getTimelineHeight()))
                 .text(telep.timelines[i].name)
             ;
         }
-
-
-        telep.setupDragBeavior();
-
     };
 
 
@@ -339,7 +377,11 @@ function Teleperiod(settings) {
      */
     this.leftButton = function()
     {
-        var group = telep.viewport.append('svg')
+        if (null !== this.leftButtonGroup) {
+            this.leftButtonGroup.remove();
+        }
+
+        this.leftButtonGroup = telep.viewport.append('svg')
             .attr('width', telep.getButtonWidth())
             .attr('height', telep.getHeaderHeight())
             .attr('class', 'button')
@@ -347,14 +389,14 @@ function Teleperiod(settings) {
             .on("click", function() { telep.queue(telep.backward); })
         ;
 
-        group.append('rect')
+        this.leftButtonGroup.append('rect')
             .attr('class', 'buttonbg')
             .attr('width', telep.getButtonWidth())
             .attr('height', telep.getHeaderHeight())
 
         ;
 
-        group.append('polygon')
+        this.leftButtonGroup.append('polygon')
             .attr('class', 'buttonarrow')
             .attr('points', '25,5 25,45 5,25')
         ;
@@ -365,7 +407,11 @@ function Teleperiod(settings) {
      */
     this.rightButton = function()
     {
-        var group = telep.viewport.append('svg')
+        if (null !== this.rightButtonGroup) {
+            this.rightButtonGroup.remove();
+        }
+
+        this.rightButtonGroup = telep.viewport.append('svg')
             .attr('width', telep.getButtonWidth())
             .attr('height', telep.getHeaderHeight())
             .attr('class', 'button')
@@ -374,14 +420,14 @@ function Teleperiod(settings) {
             .on("click", function() { telep.queue(telep.forward); })
         ;
 
-        group.append('rect')
+        this.rightButtonGroup.append('rect')
             .attr('class', 'buttonbg')
             .attr('width', telep.getButtonWidth())
             .attr('height', telep.getHeaderHeight())
         ;
 
 
-        group.append('polygon')
+        this.rightButtonGroup.append('polygon')
             .attr('class', 'buttonarrow')
             .attr('points', '5,5 25,25 5,45')
         ;
