@@ -213,10 +213,6 @@ function Teleperiod(settings) {
      * @param {Date} date
      */
     this.moveTo = function(date) {
-
-        this.main.remove();
-        telep.wtTooltip.remove();
-
         this.settings.focusDate = date;
         this.createSlidingItems();
     };
@@ -255,6 +251,10 @@ function Teleperiod(settings) {
 
     this.createSlidingItems = function()
     {
+        if (null !== telep.main) {
+            telep.main.remove();
+        }
+
         telep.main = telep.viewport.append('svg');
 
         telep.main
@@ -269,6 +269,7 @@ function Teleperiod(settings) {
         telep.leftButton();
         telep.rightButton();
         telep.timeLineNames();
+        telep.createTooltip();
     };
 
     /**
@@ -276,6 +277,17 @@ function Teleperiod(settings) {
      */
     this.createMain = function()
     {
+        this.createSlidingItems();
+        this.setupDragBeavior();
+    };
+
+
+    this.createTooltip = function()
+    {
+        if (null !== this.wtTooltip) {
+            this.wtTooltip.remove();
+        }
+
 
         telep.wtTooltip = telep.viewport.append('svg')
             .attr('width', telep.getDateWidth() + 100)
@@ -301,17 +313,6 @@ function Teleperiod(settings) {
 
         telep.wtTooltip.append('text').attr('y', 20).attr('x', textX).attr('class', 'wtTooltipDate');
         telep.wtTooltip.append('text').attr('y', 40).attr('x', textX).attr('class', 'wtTooltipHour');
-
-        this.createSlidingItems();
-
-
-
-
-
-
-
-
-        telep.setupDragBeavior();
 
     };
 
