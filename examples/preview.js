@@ -7,6 +7,8 @@ function loadPreview()
 
         focusDate: new Date(2014, 11, 25),
 
+        selectedEvent: '111111111111111111111',
+
         workingtimes: function(interval) {
 
             return Q.fcall(function () {
@@ -76,9 +78,18 @@ function loadPreview()
 
 
                 events.push({
-                    summary: 'Test',
-                    dtstart: new Date(2015, 1, 3, 9, 30, 0),
-                    dtend: new Date(2015, 1, 7, 17, 15, 0)
+                    uid: '0000ABC',
+                    summary: 'Test 1',
+                    dtstart: new Date(2015, 0, 3, 9, 30, 0),
+                    dtend: new Date(2015, 0, 6, 17, 15, 0)
+                });
+
+
+                events.push({
+                    uid: '111111111111111111111',
+                    summary: 'Test 2',
+                    dtstart: new Date(2015, 0, 14, 9, 30, 0),
+                    dtend: new Date(2015, 0, 14, 17, 15, 0)
                 });
 
 

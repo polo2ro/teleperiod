@@ -87,6 +87,8 @@ function Teleperiod(settings) {
     this.timeLineNamesGroup = null;
 
 
+
+
     /**
      * @return {Int}
      */
@@ -665,6 +667,11 @@ function Teleperiod(settings) {
         telep.settings.events(interval).then(function(arr) {
             for(var i=0; i<arr.length; i++) {
 
+                if (undefined !== arr[i].uid && telep.settings.selectedEvent === arr[i].uid) {
+                    telep.setSelection(arr[i].dtstart, arr[i].dtend);
+                    continue; // ignore event creation
+                }
+
                 indexDate = new Date(arr[i].dtstart);
                 indexDate.setHours(0, 0, 0);
 
@@ -1085,4 +1092,5 @@ function Teleperiod(settings) {
             telep.selection.highlightPeriods();
         }
     };
+
 }
