@@ -40,6 +40,13 @@
     fill:rgba(150, 10, 10, .80);
 }
 
+.teleperiod .event-summary {
+    font-size:11px;
+    fill:rgba(255, 255, 255, .8);
+    pointer-events: none;
+}
+
+
 .teleperiod .day .selection {
     fill:rgba(0, 0, 255, .8);
     cursor:pointer;

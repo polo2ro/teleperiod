@@ -93,6 +93,14 @@ function loadPreview()
                 });
 
 
+                events.push({
+                    uid: 'abc459231345',
+                    summary: 'i am a very long summary',
+                    dtstart: new Date(2015, 0, 19, 9, 30, 0),
+                    dtend: new Date(2015, 0, 19, 11, 15, 0)
+                });
+
+
                 return events;
             });
         },
