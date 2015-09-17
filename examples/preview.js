@@ -217,4 +217,9 @@ function loadPreview()
         var randDate = randomDate(new Date(2000, 0, 1), new Date(2030, 0, 1));
         teleperiod.moveTo(randDate);
     });
+
+
+    document.getElementById('testRefreshEvents').addEventListener("click", function( event ) {
+        teleperiod.refreshEvents();
+    });
 }

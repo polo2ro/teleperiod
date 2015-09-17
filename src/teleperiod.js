@@ -781,6 +781,20 @@ function Teleperiod(settings) {
         }
     };
 
+    /**
+     * Remove loaded events, reload events in viewport
+     */
+    this.refreshEvents = function()
+    {
+        var interval = {
+            from: telep.floatFrom.currentDate,
+            to: telep.floatTo.currentDate
+        };
+
+        telep.main.selectAll('.event').remove();
+        telep.loadEvents(interval);
+    };
+
 
     /**
      * @param {object} event
