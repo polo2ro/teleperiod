@@ -795,6 +795,19 @@ function Teleperiod(settings) {
         telep.loadEvents(interval);
     };
 
+
+    /**
+     * change the selectedEvent setting and refresh events
+     * @param {String} uid
+     */
+    this.editEvent = function(uid)
+    {
+        telep.settings.selectedEvent = uid;
+        telep.refreshEvents();
+    };
+
+
+
     var generateID = (function() {
         var globalIdCounter = 1;
         return function() {
