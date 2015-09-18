@@ -700,8 +700,9 @@ function Teleperiod(settings) {
                 events.push(arr[i]);
             }
 
-             console.log(selectedEvents);
-            telep.setSelection(selection.dtstart, selection.dtend);
+            if (null !== selection.dtstart && null !== selection.dtend) {
+                telep.setSelection(selection.dtstart, selection.dtend);
+            }
 
             telep.addRegularEvents(events);
         });
