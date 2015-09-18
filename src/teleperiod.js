@@ -663,12 +663,29 @@ function Teleperiod(settings) {
 
         var events = [];
         var indexDate;
+        var selectedEvents = telep.settings.selectedEvents;
+
+
 
         telep.settings.events(interval).then(function(arr) {
+
+            var selection = {
+                dtstart: null,
+                dtend: null
+            };
+
             for(var i=0; i<arr.length; i++) {
 
-                if (undefined !== arr[i].uid && telep.settings.selectedEvent === arr[i].uid) {
-                    telep.setSelection(arr[i].dtstart, arr[i].dtend);
+                if (undefined !== arr[i].uid && -1 !== selectedEvents.indexOf(arr[i].uid)) {
+
+                    if (null === selection.dtstart || selection.dtstart > arr[i].dtstart) {
+                         selection.dtstart = arr[i].dtstart;
+                    }
+
+                    if (null === selection.dtend || selection.dtend < arr[i].dtend) {
+                         selection.dtend = arr[i].dtend;
+                    }
+
                     continue; // ignore event creation
                 }
 
@@ -682,6 +699,9 @@ function Teleperiod(settings) {
                 telep.events[indexDate].push(arr[i]);
                 events.push(arr[i]);
             }
+
+             console.log(selectedEvents);
+            telep.setSelection(selection.dtstart, selection.dtend);
 
             telep.addRegularEvents(events);
         });
@@ -797,12 +817,12 @@ function Teleperiod(settings) {
 
 
     /**
-     * change the selectedEvent setting and refresh events
-     * @param {String} uid
+     * change the selectedEvents setting and refresh events
+     * @param {array} uidList
      */
-    this.editEvent = function(uid)
+    this.editEvents = function(uidList)
     {
-        telep.settings.selectedEvent = uid;
+        telep.settings.selectedEvents = uidList;
         telep.refreshEvents();
     };
 

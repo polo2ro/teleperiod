@@ -7,7 +7,7 @@ function loadPreview()
 
         focusDate: new Date(2014, 11, 25),
 
-        selectedEvent: '111111111111111111111',
+        selectedEvents: ['111111111111111111111'],
 
         workingtimes: function(interval) {
 
