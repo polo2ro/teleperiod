@@ -807,6 +807,11 @@ function Teleperiod(settings) {
      */
     this.refreshEvents = function()
     {
+        if (null === telep.floatFrom || null === telep.floatTo) {
+            // Do not refresh if teleperiod not drawn
+            return;
+        }
+
         var interval = {
             from: telep.floatFrom.currentDate,
             to: telep.floatTo.currentDate
