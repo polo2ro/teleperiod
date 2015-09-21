@@ -678,6 +678,8 @@ function Teleperiod(settings) {
 
                 if (undefined !== arr[i].uid && -1 !== selectedEvents.indexOf(arr[i].uid)) {
 
+                    // ignore creation of event if it is selected
+
                     if (null === selection.dtstart || selection.dtstart > arr[i].dtstart) {
                          selection.dtstart = arr[i].dtstart;
                     }
@@ -817,7 +819,7 @@ function Teleperiod(settings) {
             to: telep.floatTo.currentDate
         };
 
-        telep.main.selectAll('.event').remove();
+        telep.main.selectAll('.event-item').remove();
         telep.loadEvents(interval);
     };
 
@@ -879,10 +881,11 @@ function Teleperiod(settings) {
             var clipId = generateID();
 
             var clip = dayGroup.append('clipPath')
-                .attr('id', clipId);
-
+                .attr('id', clipId)
+                .attr('class', className+'-item');
 
             clip.append('rect')
+                .attr('class', className+'-item')
                 .attr('y', yStart)
                 .attr('width', telep.getDateWidth() -1 )
                 .attr('height', yEnd - yStart -6)
@@ -892,6 +895,7 @@ function Teleperiod(settings) {
 
 
             dayGroup.append('rect')
+                .attr('class', className+'-item')
                 .attr('class', className)
                 .attr('y', yStart)
                 .attr('height', yEnd - yStart)
@@ -904,10 +908,8 @@ function Teleperiod(settings) {
 
             if (event.summary) {
                 dayGroup.append('text')
+                    .attr('class', className+'-item')
                     .attr('class', className+'-summary')
-                    //.attr('transform', "rotate(10)")
-                    //.attr('x', -10)
-                    //.attr('y', 60)
                     .attr('x', yStart + 5)
                     .attr('y', -10)
                     .attr('transform', "rotate(90)")
