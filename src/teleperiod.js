@@ -895,8 +895,7 @@ function Teleperiod(settings) {
 
 
             dayGroup.append('rect')
-                .attr('class', className+'-item')
-                .attr('class', className)
+                .attr('class', className+' '+className+'-item')
                 .attr('y', yStart)
                 .attr('height', yEnd - yStart)
                 .attr('width', telep.getDateWidth() -1)
@@ -908,8 +907,7 @@ function Teleperiod(settings) {
 
             if (event.summary) {
                 dayGroup.append('text')
-                    .attr('class', className+'-item')
-                    .attr('class', className+'-summary')
+                    .attr('class', className+'-item '+className+'-summary')
                     .attr('x', yStart + 5)
                     .attr('y', -10)
                     .attr('transform', "rotate(90)")
