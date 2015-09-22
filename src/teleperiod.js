@@ -658,6 +658,7 @@ function Teleperiod(settings) {
 
     /**
      * Load event and index by date
+     * @param {object} interval
      */
     this.loadEvents = function(interval) {
 
@@ -665,8 +666,19 @@ function Teleperiod(settings) {
         var indexDate;
         var selectedEvents = telep.settings.selectedEvents;
 
+        // clear events in this interval
+
+        var loop = new Date(interval.from);
+        var items;
+
+        while (loop < interval.to) {
+            items = telep.getDayGroupByDate(loop).selectAll('.event-item');
+            items.remove();
+            loop.setDate(loop.getDate()+1);
+        }
 
 
+        // load events in this interval
         telep.settings.events(interval).then(function(arr) {
 
             var events = [];
@@ -677,6 +689,11 @@ function Teleperiod(settings) {
             };
 
             for(var i=0; i<arr.length; i++) {
+
+                // ignore events out off the interval
+                if (arr[i].dtstart > interval.to || arr[i].dtend < interval.from) {
+                    continue;
+                }
 
                 if (undefined !== arr[i].uid && -1 !== selectedEvents.indexOf(arr[i].uid)) {
 
