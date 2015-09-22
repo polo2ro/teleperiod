@@ -627,7 +627,7 @@ function Teleperiod(settings) {
     /**
      * Load working times
      * index working times by date
-     *
+     * @param {object} interval
      */
     this.loadWorkingTimes = function(interval) {
 
