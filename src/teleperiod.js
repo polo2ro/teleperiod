@@ -661,13 +661,15 @@ function Teleperiod(settings) {
      */
     this.loadEvents = function(interval) {
 
-        var events = [];
+
         var indexDate;
         var selectedEvents = telep.settings.selectedEvents;
 
 
 
         telep.settings.events(interval).then(function(arr) {
+
+            var events = [];
 
             var selection = {
                 dtstart: null,
@@ -858,6 +860,11 @@ function Teleperiod(settings) {
         loop = new Date(event.dtstart);
         while (loop.getTime() < event.dtend.getTime()) {
 
+            if (loop < telep.floatFrom.currentDate || loop > telep.floatTo.currentDate) {
+                // ignore dates not in timespan
+                loop.setDate(loop.getDate() + 1);
+                continue;
+            }
 
             x = telep.getDateX(loop);
 
