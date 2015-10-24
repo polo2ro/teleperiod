@@ -625,6 +625,55 @@ function Teleperiod(settings) {
 
 
     /**
+     * Split one events into a list of daily periods
+     * @param {object} event
+     * @return {Array}
+     */
+    this.getWorkingTimesFromEvent = function(event) {
+
+        var sameYear = (event.dtstart.getFullYear() === event.dtend.getFullYear());
+        var sameMonth = (event.dtstart.getMonth() === event.dtend.getMonth());
+        var sameDate = (event.dtstart.getDate() === event.dtend.getDate());
+
+        if (sameYear && sameMonth && sameDate) {
+            return [event];
+        }
+
+        var loopDate = new Date(event.dtstart);
+        loopDate.setHours(0, 0, 0, 0);
+
+        var workingDays = [];
+        var dayPeriod;
+
+        while(loopDate < event.dtend) {
+
+            if (loopDate < event.dtstart) {
+                dayPeriod = {
+                    dtstart: event.dtstart
+                };
+            } else {
+                dayPeriod = {
+                    dtstart: new Date(loopDate)
+                };
+
+            }
+
+            loopDate.setDate(loopDate.getDate()+1);
+
+            if (loopDate > event.dtend) {
+                dayPeriod.dtend = event.dtend;
+            } else {
+                dayPeriod.dtend = new Date(loopDate);
+            }
+
+            workingDays.push(dayPeriod);
+        }
+
+        return workingDays;
+    };
+
+
+    /**
      * Load working times
      * index working times by date
      * @param {object} interval
@@ -632,25 +681,29 @@ function Teleperiod(settings) {
     this.loadWorkingTimes = function(interval) {
 
         var workingtimes = [];
+        var indexDate;
+
+        function addDayEvent(dayEvent) {
+            indexDate = new Date(dayEvent.dtstart);
+            indexDate.setHours(0, 0, 0);
+
+            if (telep.workingtimesEvents[indexDate] === undefined) {
+                telep.workingtimesEvents[indexDate] = [];
+            }
+
+            telep.workingtimesEvents[indexDate].push(dayEvent);
+            workingtimes.push(dayEvent);
+        }
+
+
+        function addEvent(event) {
+            telep.getWorkingTimesFromEvent(event).forEach(addDayEvent);
+        }
+
 
         telep.settings.workingtimes(interval).then(function(arr) {
 
-            var indexDate;
-
-            for(var i=0; i<arr.length; i++) {
-
-                indexDate = new Date(arr[i].dtstart);
-                indexDate.setHours(0, 0, 0);
-
-                if (telep.workingtimesEvents[indexDate] === undefined) {
-                    telep.workingtimesEvents[indexDate] = [];
-                }
-
-                telep.workingtimesEvents[indexDate].push(arr[i]);
-                workingtimes.push(arr[i]);
-            }
-
-
+            arr.forEach(addEvent);
             telep.addWorkingtimes(workingtimes);
         });
     };

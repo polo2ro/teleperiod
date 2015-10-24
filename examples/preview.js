@@ -39,6 +39,22 @@ function loadPreview()
 
                         workingtimes.push(am);
                         workingtimes.push(pm);
+
+                        /*
+
+                        var am = {};
+
+                        am.summary = 'work schedule';
+                        am.dtstart = new Date(loop);
+                        am.dtstart.setHours(13, 0, 0);
+
+                        am.dtend = new Date(loop);
+                        am.dtend.setDate(am.dtend.getDate()+1);
+                        am.dtend.setHours(12, 0, 0);
+
+
+                        workingtimes.push(am);
+                        */
                     }
 
                     loop.setDate(loop.getDate() + 1);
