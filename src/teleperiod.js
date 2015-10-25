@@ -663,7 +663,8 @@ function Teleperiod(settings) {
             if (loopDate > event.dtend) {
                 dayPeriod.dtend = event.dtend;
             } else {
-                dayPeriod.dtend = new Date(loopDate);
+                dayPeriod.dtend = new Date(event.dtstart);
+                dayPeriod.dtend.setHours(0, telep.getDayLastMinute(), 59);
             }
 
             workingDays.push(dayPeriod);
@@ -851,13 +852,17 @@ function Teleperiod(settings) {
 
 
     /**
+     *
      * @param {Date} d
      * @return {Date}
      */
     this.getDayEnd = function(d)
     {
         var r = new Date(d);
-        r.setHours(0, telep.getDayLastMinute(), 0);
+        var min = telep.getDayLastMinute();
+
+        r.setHours(0, min, 0);
+
 
         return r;
     };

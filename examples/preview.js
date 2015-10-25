@@ -9,6 +9,9 @@ function loadPreview()
 
         selectedEvents: ['111111111111111111111'],
 
+        //dayFirstMinute: 0,
+        //dayLastMinute: 23*60 + 59,
+
         workingtimes: function(interval) {
 
             return Q.fcall(function () {
@@ -19,7 +22,7 @@ function loadPreview()
                 while (loop.getTime() < interval.to.getTime()) {
 
                     if (loop.getDay() !== 0 && loop.getDay() !== 6) {
-
+                        /*
                         var am = {};
                         var pm = {};
 
@@ -39,8 +42,8 @@ function loadPreview()
 
                         workingtimes.push(am);
                         workingtimes.push(pm);
+                        */
 
-                        /*
 
                         var am = {};
 
@@ -54,7 +57,7 @@ function loadPreview()
 
 
                         workingtimes.push(am);
-                        */
+
                     }
 
                     loop.setDate(loop.getDate() + 1);
