@@ -655,7 +655,7 @@ function Teleperiod(settings) {
                 dayPeriod = {
                     dtstart: new Date(loopDate)
                 };
-
+                dayPeriod.dtstart.setHours(0, telep.getDayFirstMinute(), 0);
             }
 
             loopDate.setDate(loopDate.getDate()+1);

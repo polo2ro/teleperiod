@@ -66,16 +66,24 @@ function Selection(teleperiod) {
                 selection.highlightPeriods();
             }
 
-            if (selection.teleperiod.settings.onUpdated) {
-                selection.teleperiod.settings.onUpdated(selection);
-            }
-
+            selection.notifyUpdated();
             return true;
         }
 
         selection.resetOverlay();
         return false;
     };
+
+
+    this.notifyUpdated = function() {
+
+
+        if (selection.teleperiod.settings.onUpdated) {
+            selection.teleperiod.settings.onUpdated(selection);
+        }
+    };
+
+
 
     /**
      * Get the list of <g> elements for the period
@@ -124,27 +132,74 @@ function Selection(teleperiod) {
 
 
     /**
+     * @param {Date} position
+     * @return {Boolean}
+     */
+    this.isLastMinute = function(position)
+    {
+        var min = position.getHours()*60 + position.getMinutes();
+        return (min === teleperiod.getDayLastMinute());
+    };
+
+    /**
+     * @param {Date} position
+     * @return {Boolean}
+     */
+    this.isFirstMinute = function(position)
+    {
+        var min = position.getHours()*60 + position.getMinutes();
+        return (min === teleperiod.getDayFirstMinute());
+    };
+
+
+    /**
+     * @param {Object} last
+     * @param {Object} next
+     * @return {Boolean}
+     */
+    this.testContiguous = function(last, next)
+    {
+        return (selection.isLastMinute(last.dtend) && selection.isFirstMinute(next.dtstart));
+    };
+
+
+
+    /**
      * Get an array of periods beetween dtstart and dtend of all working times periods in the interval
+     * @param {Boolean} mergeContiguous
      * @return {Array}
      */
-    this.getValidPeriods = function()
+    this.getValidPeriods = function(mergeContiguous)
     {
+        if (undefined === mergeContiguous) {
+            mergeContiguous = true;
+        }
+
         var loop = new Date(selection.dtstart);
         loop.setHours(0, 0, 0);
         var indexDate, workingtime, cropped;
         var workingtimes = [];
+        var last;
 
         while(loop < selection.dtend) {
 
             if (selection.teleperiod.workingtimesEvents[loop] !== undefined) {
                 var workingTimesOnDay = selection.teleperiod.workingtimesEvents[loop];
 
-                for(var i=0; i<workingTimesOnDay.length; i++) {
+                for (var i=0; i<workingTimesOnDay.length; i++) {
 
                     cropped = selection.cropPeriod(workingTimesOnDay[i]);
 
                     if (cropped) {
-                        workingtimes.push(cropped);
+                        last = workingtimes[workingtimes.length-1];
+
+                        if (undefined !== last && mergeContiguous && selection.testContiguous(last, cropped)) {
+
+                            // update last event
+                            last.dtend = cropped.dtend;
+                        } else {
+                            workingtimes.push(cropped);
+                        }
                     }
                 }
             }
@@ -161,7 +216,7 @@ function Selection(teleperiod) {
     this.highlightPeriods = function()
     {
 
-        var periods = selection.getValidPeriods();
+        var periods = selection.getValidPeriods(false);
 
         for(var i=0; i<periods.length; i++) {
             var g = selection.teleperiod.getDayGroupByDate(periods[i].dtstart);
@@ -243,10 +298,8 @@ function Selection(teleperiod) {
     this.resetOverlay = function()
     {
         selection.removeOverlay();
+        selection.notifyUpdated();
 
-        if (selection.teleperiod.settings.onUpdated) {
-            selection.teleperiod.settings.onUpdated(selection);
-        }
     };
 
 
@@ -256,7 +309,7 @@ function Selection(teleperiod) {
      */
     this.getDuration = function()
     {
-        var periods = selection.getValidPeriods();
+        var periods = selection.getValidPeriods(false);
         var duration = 0;
 
         for(var i=0; i<periods.length; i++) {
