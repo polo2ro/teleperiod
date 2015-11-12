@@ -706,7 +706,7 @@ function Teleperiod(settings) {
 
             arr.forEach(addEvent);
             telep.addWorkingtimes(workingtimes);
-        });
+        }, telep.onError);
     };
 
 
@@ -780,7 +780,7 @@ function Teleperiod(settings) {
             }
 
             telep.addRegularEvents(events);
-        });
+        }, telep.onError);
     };
 
 
@@ -1256,4 +1256,14 @@ function Teleperiod(settings) {
         }
     };
 
+
+    /**
+     * Error from promised events
+     * @param {Error|String} err
+     */
+    this.onError = function(err) {
+        if (console !== undefined) {
+            console.log(err);
+        }
+    };
 }

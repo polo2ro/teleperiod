@@ -72,7 +72,7 @@ function Timeline(name, datasource) {
                     loop.setDate(loop.getDate() + 1);
                 }
             }
-        });
+        }, this.teleperiod.onError);
 
 
 
