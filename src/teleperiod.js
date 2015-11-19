@@ -749,7 +749,7 @@ function Teleperiod(settings) {
                     continue;
                 }
 
-                if (undefined !== arr[i].uid && -1 !== selectedEvents.indexOf(arr[i].uid)) {
+                if (undefined !== selectedEvents && undefined !== arr[i].uid && -1 !== selectedEvents.indexOf(arr[i].uid)) {
 
                     // ignore creation of event if it is selected
 
@@ -1232,7 +1232,6 @@ function Teleperiod(settings) {
      * Click the right button
      */
     this.forward = function() {
-
         telep.forwardGrow();
         return telep.slideMain(-1 * telep.getMoveDays());
     };
