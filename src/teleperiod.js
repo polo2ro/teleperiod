@@ -922,6 +922,35 @@ function Teleperiod(settings) {
 
 
     /**
+     * @param {object} dayGroup     d3 selection for the day group
+     * @param {String} className    class name of the event
+     * @return {Array}
+     */
+    this.getDayGroupEvents = function(dayGroup, className)
+    {
+        var events = [];
+        dayGroup.selectAll('.'+className).each(function() {
+            events.push(this._teleperiodEvent);
+        });
+
+        return events;
+    };
+
+
+    this.getOverlappedEvents = function(dayGroup, event)
+    {
+        var events = [];
+        telep.getDayGroupEvents(dayGroup, 'event').forEach(function(evt) {
+            if (evt.dtend > event.dtstart || evt.dtstart < event.dtend) {
+                events.push(evt);
+            }
+        });
+
+        return events;
+    };
+
+
+    /**
      * @param {object} event
      * @param {string} className class to set on the created rect
      * @param {object} cb object with events callback for mouseover, mouseout, mousemove, click
@@ -960,6 +989,16 @@ function Teleperiod(settings) {
 
             var dayGroup = telep.getDayGroupByDate(loop);
 
+
+            if ('event' === className) {
+                var conflicts = telep.getOverlappedEvents(dayGroup, event);
+                if (conflicts.length > 0) {
+                    console.log('event from '+event.dtstart+' to '+event.dtend+' ignored because of a conflict');
+                    loop.setDate(loop.getDate() + 1);
+                    continue;
+                }
+            }
+
             var clipId = generateID();
 
             var clip = dayGroup.append('clipPath')
@@ -976,7 +1015,7 @@ function Teleperiod(settings) {
                 .attr('transform', "rotate(-90)");
 
 
-            dayGroup.append('rect')
+            var evtRect = dayGroup.append('rect')
                 .attr('class', className+' '+className+'-item')
                 .attr('y', yStart)
                 .attr('height', yEnd - yStart)
@@ -986,6 +1025,9 @@ function Teleperiod(settings) {
                 .on('mousemove', cb.mousemove)
                 .on('click', cb.click)
             ;
+
+            evtRect[0][0]._teleperiodEvent = event;
+
 
             if (event.summary) {
                 dayGroup.append('text')
