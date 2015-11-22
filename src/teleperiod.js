@@ -936,7 +936,11 @@ function Teleperiod(settings) {
         return events;
     };
 
-
+    /**
+     * @param {object} dayGroup     d3 selection for the day group
+     * @param {object} event        Event to draw
+     * @return {Array}
+     */
     this.getOverlappedEvents = function(dayGroup, event)
     {
         var events = [];
@@ -948,6 +952,35 @@ function Teleperiod(settings) {
 
         return events;
     };
+
+
+    /**
+     * Tet if the event is in the list of conflicts with UID and dates compare
+     * @param {object} event    The event object to test uid from
+     * @param {Array} list of events to compare with
+     * @return {Boolean}
+     */
+    this.isEventIn = function(event, conflicts)
+    {
+        if (undefined === event.uid) {
+            return false;
+        }
+
+
+        for(var i=0; i<conflicts.length; i++) {
+
+            var sameUid = (undefined !== conflicts[i].uid && conflicts[i].uid === event.uid);
+            var sameDtstart = conflicts[i].dtstart.getTime() === event.dtstart.getTime();
+            var sameDtend = conflicts[i].dtend.getTime() === event.dtend.getTime();
+
+            if (sameUid && sameDtstart && sameDtend) {
+                return true;
+            }
+        }
+
+        return false;
+    };
+
 
 
     /**
@@ -993,7 +1026,16 @@ function Teleperiod(settings) {
             if ('event' === className) {
                 var conflicts = telep.getOverlappedEvents(dayGroup, event);
                 if (conflicts.length > 0) {
-                    console.log('event from '+event.dtstart+' to '+event.dtend+' ignored because of a conflict');
+
+                    // can be a conflict or an event inserted twice
+                    // event is ignored if conflict but error message only if the uid does not match a conflict
+
+                    if (undefined !== console) {
+                        if (!telep.isEventIn(event, conflicts)) {
+                            console.warn('Event ignored because of a conflict', event, 'others in same day', conflicts);
+                        }
+                    }
+
                     loop.setDate(loop.getDate() + 1);
                     continue;
                 }
