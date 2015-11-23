@@ -945,9 +945,11 @@ function Teleperiod(settings) {
     {
         var events = [];
         telep.getDayGroupEvents(dayGroup, 'event').forEach(function(evt) {
-            if (evt.dtend > event.dtstart || evt.dtstart < event.dtend) {
-                events.push(evt);
+            if (evt.dtend < event.dtstart || evt.dtstart > event.dtend) {
+                return;
             }
+
+            events.push(evt);
         });
 
         return events;
