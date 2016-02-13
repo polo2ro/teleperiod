@@ -51,6 +51,8 @@ function Selection(teleperiod) {
      */
     this.setDate = function(pointerDate)
     {
+        pointerDate.setMilliseconds(0);
+
         if (null === selection.dtstart || selection.dtstart.getTime() > pointerDate.getTime() || selection.isValid()) {
             selection.dtstart = pointerDate;
             selection.dtend = null;

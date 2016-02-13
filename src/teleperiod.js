@@ -765,7 +765,7 @@ function Teleperiod(settings) {
                 }
 
                 indexDate = new Date(arr[i].dtstart);
-                indexDate.setHours(0, 0, 0);
+                indexDate.setHours(0, 0, 0, 0);
 
                 if (telep.events[indexDate] === undefined) {
                     telep.events[indexDate] = [];
