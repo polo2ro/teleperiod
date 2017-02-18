@@ -88,6 +88,9 @@ function loadPreview()
 
                         newYearDay.dtend = new Date(newYearDay.dtstart);
                         newYearDay.dtend.setDate(newYearDay.dtstart.getDate() + 1);
+
+                        newYearDay.categories = ['nonworking'];
+
                         events.push(newYearDay);
                     }
 

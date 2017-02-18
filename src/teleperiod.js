@@ -834,9 +834,10 @@ function Teleperiod(settings) {
 
     this.addRegularEvents = function(events)
     {
-
         telep.addEvents(events, 'event', {});
     };
+
+
 
     /**
      * @param {Date} d
@@ -1058,9 +1059,26 @@ function Teleperiod(settings) {
                 .attr('x', -10)
                 .attr('transform', "rotate(-90)");
 
+            var mainClass = className;
+            var summaryClass = className+'-summary';
+
+            if (event.categories) {
+                var cats = event.categories;
+                if (!(cats instanceof Array)) {
+                    cats = cats.split(',');
+                }
+
+                mainClass += ' '+cats.map(function(cat) {
+                    return 'category-'+cat;
+                }).join(' ');
+
+		summaryClass += ' '+cats.map(function(cat) {
+                    return 'summary-category-'+cat;
+                }).join(' ');
+            }
 
             var evtRect = dayGroup.append('rect')
-                .attr('class', className+' '+className+'-item')
+                .attr('class', mainClass+' '+className+'-item')
                 .attr('y', yStart)
                 .attr('height', yEnd - yStart)
                 .attr('width', telep.getDateWidth() -1)
@@ -1075,7 +1093,7 @@ function Teleperiod(settings) {
 
             if (event.summary) {
                 dayGroup.append('text')
-                    .attr('class', className+'-item '+className+'-summary')
+                    .attr('class', className+'-item '+summaryClass)
                     .attr('x', yStart + 5)
                     .attr('y', -10)
                     .attr('transform', "rotate(90)")

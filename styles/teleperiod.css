@@ -40,10 +40,18 @@
     fill:rgba(150, 10, 10, .80);
 }
 
+.teleperiod .day .category-nonworking {
+    fill:#f2d714;
+}
+
 .teleperiod .event-summary {
     font-size:11px;
     fill:rgba(255, 255, 255, .8);
     pointer-events: none;
+}
+
+.teleperiod .summary-category-nonworking {
+    fill: #000;
 }
 
 
