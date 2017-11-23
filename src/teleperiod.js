@@ -200,7 +200,7 @@ function Teleperiod(settings) {
      * @return {String}
      */
     this.getDateLocale = function() {
-        return this.settings.dateLocale || 'Fr-fr';
+        return this.settings.dateLocale;
     };
 
     /**

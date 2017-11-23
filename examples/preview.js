@@ -4,7 +4,7 @@ function loadPreview()
 
     var teleperiod = new Teleperiod({
         object: d3.select('#teleperiod_placeholder'),
-
+        dateLocale: 'fr-FR',
         focusDate: new Date(2014, 11, 25),
 
         selectedEvents: ['111111111111111111111'],
