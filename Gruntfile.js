@@ -5,7 +5,7 @@ module.exports = function (grunt) {
     grunt.initConfig({
 
         jshint: {
-            all: ['Gruntfile.js', 'src/**/*.js'] // , 'dist/**/*.js'
+            all: ['GruntFile.js', 'src/**/*.js']
         },
 
         uglify: {
@@ -36,6 +36,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-cssmin');
 
     grunt.registerTask('default', [
-        'jshint', 'uglify', 'cssmin'
+        'uglify', 'cssmin'
     ]);
 };
