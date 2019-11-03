@@ -665,6 +665,10 @@ function Teleperiod(settings) {
             } else {
                 dayPeriod.dtend = new Date(event.dtstart);
                 dayPeriod.dtend.setHours(0, telep.getDayLastMinute(), 59);
+
+                if (dayPeriod.dtend < dayPeriod.dtstart) {
+                    dayPeriod.dtend.setDate(dayPeriod.dtstart.getDate());
+                }
             }
 
             workingDays.push(dayPeriod);
