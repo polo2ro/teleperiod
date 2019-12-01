@@ -16,7 +16,7 @@ var teleperiod = new Teleperiod({
 
 describe('Teleperiod', function() {
     'use strict';
-    
+
     describe('getWorkingTimesFromEvent()', function() {
         it('regular event', function() {
             var workingtimes = teleperiod.getWorkingTimesFromEvent({
@@ -44,9 +44,10 @@ describe('Teleperiod', function() {
 
         it('4 days event with overlapping month', function() {
             var workingtimes = teleperiod.getWorkingTimesFromEvent({
-                dtstart: new Date(2020, 0, 31, 16, 0, 0),
+                dtstart: new Date(2020, 0, 31, 17, 0, 0),
                 dtend: new Date(2020, 1, 3, 8, 0, 0)
             });
+            console.log(workingtimes);
             expect(workingtimes).to.have.lengthOf(4);
         });
 
@@ -55,7 +56,6 @@ describe('Teleperiod', function() {
                 dtstart: new Date(2020, 0, 31, 16, 0, 0),
                 dtend: new Date(2020, 1, 3, 6, 0, 0)
             });
-            console.log(workingtimes);
             expect(workingtimes).to.have.lengthOf(3);
         });
     });
