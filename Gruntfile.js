@@ -35,7 +35,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
 
-    grunt.registerTask('test', ['jshint', 'mochaTest']);
     grunt.registerTask('default', [
         'uglify', 'cssmin'
     ]);
