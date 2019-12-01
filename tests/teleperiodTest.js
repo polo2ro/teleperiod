@@ -47,8 +47,10 @@ describe('Teleperiod', function() {
                 dtstart: new Date(2020, 0, 31, 17, 0, 0),
                 dtend: new Date(2020, 1, 3, 8, 0, 0)
             });
-            console.log(workingtimes);
             expect(workingtimes).to.have.lengthOf(4);
+            workingtimes.forEach(function(e) {
+                expect(e.dtstart).to.be.below(e.dtend);
+            });
         });
 
         it('4 days event with overlapping month, end before start minute', function() {
