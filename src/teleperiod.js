@@ -659,6 +659,9 @@ function Teleperiod(settings) {
             }
 
             loopDate.setDate(loopDate.getDate()+1);
+            if (dayPeriod.dtstart >= event.dtend) {
+                break;
+            }
 
             if (loopDate > event.dtend) {
                 dayPeriod.dtend = event.dtend;
