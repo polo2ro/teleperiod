@@ -616,7 +616,6 @@ function Teleperiod(settings) {
         telep.loadWorkingTimes(interval);
         telep.loadEvents(interval);
 
-
         for(var i=0; i<telep.timelines.length; i++) {
             telep.timelines[i].load(from, to);
         }
@@ -659,6 +658,9 @@ function Teleperiod(settings) {
             }
 
             loopDate.setDate(loopDate.getDate()+1);
+            if (dayPeriod.dtstart >= event.dtend) {
+                break;
+            }
 
             if (loopDate > event.dtend) {
                 dayPeriod.dtend = event.dtend;
@@ -667,13 +669,19 @@ function Teleperiod(settings) {
                 dayPeriod.dtend.setHours(0, telep.getDayLastMinute(), 59);
 
                 if (dayPeriod.dtend < dayPeriod.dtstart) {
-                    dayPeriod.dtend.setDate(dayPeriod.dtstart.getDate());
+                    dayPeriod.dtend = new Date(
+                        dayPeriod.dtstart.getFullYear(),
+                        dayPeriod.dtstart.getMonth(),
+                        dayPeriod.dtstart.getDate(),
+                        dayPeriod.dtend.getHours(),
+                        dayPeriod.dtend.getMinutes(),
+                        dayPeriod.dtend.getSeconds()
+                    );
                 }
             }
 
             workingDays.push(dayPeriod);
         }
-
         return workingDays;
     };
 
@@ -814,7 +822,6 @@ function Teleperiod(settings) {
      */
     this.addWorkingtimes = function(workingtimes)
     {
-
         telep.addEvents(workingtimes, 'workingtime', {
             mouseover: function() {
                 telep.wtTooltip
@@ -999,8 +1006,6 @@ function Teleperiod(settings) {
     {
         var x, yStart, yEnd, loop, dayBegin, dayEnd;
 
-
-
         loop = new Date(event.dtstart);
         while (loop.getTime() < event.dtend.getTime()) {
 
@@ -1076,7 +1081,7 @@ function Teleperiod(settings) {
                     return 'category-'+cat;
                 }).join(' ');
 
-		summaryClass += ' '+cats.map(function(cat) {
+		        summaryClass += ' '+cats.map(function(cat) {
                     return 'summary-category-'+cat;
                 }).join(' ');
             }
@@ -1221,7 +1226,6 @@ function Teleperiod(settings) {
         telep.queued.push(fn);
 
         if (1 < telep.queued.length) {
-            // console.log('Skip process in queue');
             return;
         }
 
